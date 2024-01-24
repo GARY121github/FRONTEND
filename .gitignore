@@ -1,0 +1,51 @@
+# Node.js
+node_modules/
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn
+yarn-error.log
+.pnp.*
+.env
+package-lock.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Vite
+/dist/
+/build/
+public/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TypeScript
+*.tsbuildinfo
+*.tsgecko
+
+# React
+build/
+
+# Tailwind CSS
+.tailwindcss-debug.log
+.tailwindcss-plugins.log
+tailwind.config.js
+postcss.config.js
+
+# Shadow CSS
+.shadcn/
+.shadcnrc
+.shadcn.lock
+
+# Customized for Vite + TypeScript + React + Tailwind CSS + Shadow CSS
+.cache/
+.pnpm-debug.log
