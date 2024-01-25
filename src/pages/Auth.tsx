@@ -11,12 +11,17 @@ import { useEffect } from "react";
 import SignUpFrom from "@/components/signup-form";
 import LoginForm from "@/components/login-form";
 
-function SignUp() {
+interface AuthProps {
+  login: boolean;
+}
+
+function Auth(props : AuthProps) {
   const [login, setLogin] = React.useState(false);
 
   useEffect(() => {
-    setLogin(false);
+    setLogin(props.login);
   }, []);
+
   return (
     <Card className="w-5/12 mx-auto flex flex-col p-2 ">
       <CardHeader>
@@ -42,4 +47,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default Auth;

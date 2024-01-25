@@ -5,7 +5,7 @@ import * as z from "zod";
 import axios from "axios";
 import useAuth from "@/hooks/useAuth";
 
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -29,7 +29,7 @@ const formSchema = z.object({
 });
 
 function LoginForm() {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
@@ -59,11 +59,18 @@ function LoginForm() {
           },
         }
       );
-      login(response.data.data);
+      if (response.status !== 200) {
+        throw new Error(response?.data?.message);
+      }
+      login(response.data.data.user);
+      const accessToken = response.data.data.accessToken;
+      const refreshToken = response.data.data.refreshToken;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
       toast({
         title: "Login Successfully",
         description: response.data.message,
-      })
+      });
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -77,10 +84,7 @@ function LoginForm() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="username"

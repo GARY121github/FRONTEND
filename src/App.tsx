@@ -1,10 +1,11 @@
 import Auth from "@/pages/Auth";
+import Navbar from "@/components/NavBar/Navbar";
 
 function App() {
-
   return (
     <>
-      <Auth />
+      <Navbar />
+      <Auth login={true} />
     </>
   );
 }
