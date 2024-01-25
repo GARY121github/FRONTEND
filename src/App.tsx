@@ -1,10 +1,10 @@
-import SignUp from "@/pages/SignUp";
+import Auth from "@/pages/Auth";
 
 function App() {
 
   return (
     <>
-      <SignUp />
+      <Auth />
     </>
   );
 }

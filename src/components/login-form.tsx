@@ -5,8 +5,8 @@ import * as z from "zod";
 import axios from "axios";
 import useAuth from "@/hooks/useAuth";
 
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -17,37 +17,28 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+// username, email, password
 const formSchema = z.object({
   username: z.string().trim().min(4, {
-    message: "Username must be at least 4 characters.",
+    message: "Please enter your username.",
   }),
   email: z.string().email(),
-  fullName: z.string().trim().min(4, {
-    message: "Full name must be at least 4 characters.",
-  }),
   password: z.string().min(8, {
-    message: "Password must be at least 8 characters.",
+    message: "Please enter your password.",
   }),
-  avatar: z.instanceof(File, {
-    message: "Please upload avatar image.",
-  }),
-  coverImage: z.instanceof(File).optional(),
 });
 
-function SignUpFrom() {
-  const [loading, setLoading] = useState(false);
+function LoginForm() {
   const { toast } = useToast()
-  const {user , login} = useAuth();
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
       email: "",
-      fullName: "",
       password: "",
-      avatar: new File([], ""),
-      coverImage: new File([], ""),
     },
   });
 
@@ -56,26 +47,23 @@ function SignUpFrom() {
       const formData = new FormData();
       formData.append("username", values.username);
       formData.append("email", values.email);
-      formData.append("fullName", values.fullName);
       formData.append("password", values.password);
-      values.avatar?.name && formData.append("avatar", values.avatar!);
-      values.coverImage?.name &&
-        formData.append("coverImage", values.coverImage!);
-
-      console.log(user);
 
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:8000/api/v1/users/register",
-        formData
+        "http://localhost:8000/api/v1/users/login",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json", // Set the content type to JSON
+          },
+        }
       );
-
-      toast({
-        title: "Register Success",
-        description: response.data.message,
-      });
-      
       login(response.data.data);
+      toast({
+        title: "Login Successfully",
+        description: response.data.message,
+      })
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -92,7 +80,6 @@ function SignUpFrom() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
-        encType="multipart/form-data"
       >
         <FormField
           control={form.control}
@@ -126,19 +113,6 @@ function SignUpFrom() {
         />
         <FormField
           control={form.control}
-          name="fullName"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Full Name</FormLabel>
-              <FormControl>
-                <Input placeholder="gary stark" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
@@ -150,50 +124,12 @@ function SignUpFrom() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="avatar"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Avatar</FormLabel>
-              <FormControl>
-                <Input
-                  accept=".jpg, .jpeg, .png, .svg, .gif, .mp4"
-                  type="file"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="coverImage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cover Image</FormLabel>
-              <FormControl>
-                <Input
-                  accept=".jpg, .jpeg, .png, .svg, .gif, .mp4"
-                  type="file"
-                  onChange={(e) =>
-                    field.onChange(e.target.files ? e.target.files[0] : null)
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <Button className="w-full" type="submit">
-          SignUp
+          Login
         </Button>
       </form>
     </Form>
   );
 }
 
-export default SignUpFrom;
+export default LoginForm;
