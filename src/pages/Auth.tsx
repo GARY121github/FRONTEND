@@ -23,7 +23,7 @@ function Auth(props : AuthProps) {
   }, []);
 
   return (
-    <Card className="w-5/12 mx-auto flex flex-col p-2 ">
+    <Card className="flex flex-col w-5/12 mx-auto p-2">
       <CardHeader>
         <CardTitle className="text-center text-3xl">
           {login ? "LogIn" : "SignUp"}
