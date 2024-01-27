@@ -1,11 +1,8 @@
-import Auth from "@/pages/Auth";
-import Navbar from "@/components/NavBar/Navbar";
-
+import Home from "./pages/Home";
 function App() {
   return (
     <>
-      <Navbar />
-      <Auth login={true} />
+      <Home />
     </>
   );
 }
