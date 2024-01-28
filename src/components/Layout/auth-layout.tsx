@@ -20,14 +20,12 @@ const Protected: React.FC<ProtectedProps> = ({
   useEffect(() => {
     console.log(authentication, isAuthenticated);
     if (!authentication && isAuthenticated) {
-      
       toast({
         variant: "destructive",
         title: "Unauthorized",
         description: "You are already logged-in.",
       });
-    }
-    else if(authentication && !isAuthenticated) {
+    } else if (authentication && !isAuthenticated) {
       toast({
         variant: "destructive",
         title: "Unauthorized",
@@ -36,8 +34,7 @@ const Protected: React.FC<ProtectedProps> = ({
       navigate("/login");
     }
     setLoader(false);
-
-  }, [isAuthenticated, navigate, authentication]);
+  }, []);
 
   return loader ? <h1>loading...</h1> : <>{children}</>;
 };
