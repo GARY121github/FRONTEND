@@ -7,6 +7,7 @@ import useAuth from "@/hooks/useAuth";
 
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -28,10 +29,16 @@ const formSchema = z.object({
   }),
 });
 
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+
 function LoginForm() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const navigator = useNavigate();
+
+  const { status, user } = useSelector((state: RootState) => state.auth);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,6 +57,8 @@ function LoginForm() {
       formData.append("password", values.password);
 
       setLoading(true);
+      console.log("Authenticating -> ", status);
+      console.log("User -> ", user);
       const response = await axios.post(
         "http://localhost:8000/api/v1/users/login",
         formData,
@@ -62,6 +71,7 @@ function LoginForm() {
       if (response.status !== 200) {
         throw new Error(response?.data?.message);
       }
+      console.log(response);
       login(response.data.data.user);
       const accessToken = response.data.data.accessToken;
       const refreshToken = response.data.data.refreshToken;
@@ -72,6 +82,7 @@ function LoginForm() {
         description: response.data.message,
       });
       setLoading(false);
+      navigator("/");
     } catch (error) {
       console.error(error);
       setLoading(false);

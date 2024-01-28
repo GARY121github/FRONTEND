@@ -7,20 +7,19 @@ import {
   MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { LogOut, CircleUserRound } from "lucide-react";
+import { CircleUserRound, AlignJustify } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Search from "@/components/search";
 import useAuth from "@/hooks/useAuth";
 import { useEffect } from "react";
-import { AlignJustify } from "lucide-react";
 import { Button } from "../ui/button";
+import { Link } from "react-router-dom";
+import Logout from "@/components/logout";
 
 const Navbar: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
 
-  useEffect(() => {
-    // console.log(user);
-  }, [user]);
+  useEffect(() => {}, [user, isAuthenticated]);
   return (
     <header className="sticky top-0 border-b-2 bg-white z-10">
       <nav className="flex justify-between p-3">
@@ -34,9 +33,8 @@ const Navbar: React.FC = () => {
         </section>
         <section className="basis-[25%] w-full">
           <Menubar className="flex justify-end border-none shadow-none">
-            {
-              isAuthenticated ? (
-                <MenubarMenu>
+            {isAuthenticated ? (
+              <MenubarMenu>
                 <MenubarTrigger className="bg-inherit cursor-pointer rounded-full p-0">
                   <Avatar>
                     <AvatarImage
@@ -50,18 +48,25 @@ const Navbar: React.FC = () => {
                     Profile <CircleUserRound />
                   </MenubarItem>
                   <MenubarSeparator />
-                  <MenubarItem className="flex justify-between cursor-pointer">
-                    Logout <LogOut />
+                  <MenubarItem>
+                    <Logout />
                   </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
-              ) : (
-                <MenubarMenu>
-                  <Button className="bg-inherit text-black shadow-none hover:bg-inherit hover:text-slate-600">Sign in</Button>
-                  <Button className="rounded-full bg-blue-400 hover:bg-blue-500">Get Started</Button>
-                </MenubarMenu>
-              )
-            }
+            ) : (
+              <MenubarMenu>
+                <Link to="/login">
+                  <Button className="bg-inherit text-black shadow-none hover:bg-inherit hover:text-slate-600">
+                    Sign in
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button className="rounded-full bg-blue-400 hover:bg-blue-500">
+                    Get Started
+                  </Button>
+                </Link>
+              </MenubarMenu>
+            )}
           </Menubar>
         </section>
       </nav>
