@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "@/components/Layout/pages-layout";
-import VideoCard from "@/components/video/video-card";
+import VideoList from "@/components/video/video-list";
 
 interface Video {
   id: number;
@@ -37,12 +37,13 @@ interface Video {
   };
 }
 
-const Home = () => {
+const History = () => {
   const data: Array<Video> = [
     {
       id: 1,
-      title: "Video Title",
-      description: "Video Description",
+      title: "JavaScript Fundamentals: Variables and Data Types",
+      description:
+        "Learn the basics of JavaScript, including variables, data types, and how to use them in your programs.",
       url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
       thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
       duration: "00:00:00",
@@ -70,7 +71,7 @@ const Home = () => {
         id: 1,
         name: "Gary Stark",
         email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
+        avatar: "https://github.com/shadcn.png",
       },
     },
     {
@@ -104,7 +105,7 @@ const Home = () => {
         id: 1,
         name: "Gary Stark",
         email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
+        avatar: "https://github.com/shadcn.png",
       },
     },
     {
@@ -138,7 +139,7 @@ const Home = () => {
         id: 1,
         name: "Gary Stark",
         email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
+        avatar: "https://github.com/shadcn.png",
       },
     },
     {
@@ -172,7 +173,7 @@ const Home = () => {
         id: 1,
         name: "Gary Stark",
         email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
+        avatar: "https://github.com/shadcn.png",
       },
     },
     {
@@ -206,7 +207,7 @@ const Home = () => {
         id: 1,
         name: "Gary Stark",
         email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
+        avatar: "https://github.com/shadcn.png",
       },
     },
     {
@@ -240,7 +241,7 @@ const Home = () => {
         id: 1,
         name: "Gary Stark",
         email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
+        avatar: "https://github.com/shadcn.png",
       },
     },
     {
@@ -274,7 +275,7 @@ const Home = () => {
         id: 1,
         name: "Gary Stark",
         email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
+        avatar: "https://github.com/shadcn.png",
       },
     },
     {
@@ -308,7 +309,7 @@ const Home = () => {
         id: 1,
         name: "Gary Stark",
         email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
+        avatar: "https://github.com/shadcn.png",
       },
     },
     {
@@ -342,21 +343,20 @@ const Home = () => {
         id: 1,
         name: "Gary Stark",
         email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
+        avatar: "https://github.com/shadcn.png",
       },
     },
-    
   ];
 
   return (
     <Layout>
-      <div className="grid grid-cols-3 gap-4 p-3">
+      <div className="flex flex-col gap-4 p-4">
         {data.map((video: Video) => (
-          <VideoCard key={video.id} video={video} />
+          <VideoList video={video} key={video.id} />
         ))}
       </div>
     </Layout>
   );
 };
 
-export default Home;
+export default History;

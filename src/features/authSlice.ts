@@ -1,10 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit";
+// reducers/authSlice.ts
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-
+interface UserData {
+  _id: string;
+  username: string;
+  email: string;
+  fullName: string;
+  avatar: string;
+  coverImage: string;
+  watchHistory: Array<object>; // Update the type accordingly based on the actual structure
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 
 interface AuthState {
   status: boolean;
-  user: object | null;
+  user: UserData | null;
 }
 
 const initialState: AuthState = {
@@ -16,7 +28,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (state, action) => {
+    login: (state, action: PayloadAction<UserData>) => {
       state.status = true;
       state.user = action.payload;
     },

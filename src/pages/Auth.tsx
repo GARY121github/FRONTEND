@@ -10,12 +10,13 @@ import {
 import { useEffect } from "react";
 import SignUpFrom from "@/components/signup-form";
 import LoginForm from "@/components/login-form";
+import { Link } from "react-router-dom";
 
 interface AuthProps {
   login: boolean;
 }
 
-function Auth(props : AuthProps) {
+function Auth(props: AuthProps) {
   const [login, setLogin] = React.useState(false);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ function Auth(props : AuthProps) {
   }, []);
 
   return (
-    <Card className="flex flex-col w-5/12 mx-auto p-2">
+    <Card className="flex flex-col w-8/12 mx-auto h-screen items-center justify-center">
       <CardHeader>
         <CardTitle className="text-center text-3xl">
           {login ? "LogIn" : "SignUp"}
@@ -39,7 +40,16 @@ function Auth(props : AuthProps) {
             }}
             className="font-bold cursor-pointer hover:text-slate-600"
           >
-            {login ? "SignUp" : "Login"}
+            {
+            login ? 
+            <Link to="/register">
+            SignUp
+            </Link>
+            : 
+            <Link to="/login">
+            Login
+            </Link>
+            }
           </span>
         </h5>
       </CardFooter>
