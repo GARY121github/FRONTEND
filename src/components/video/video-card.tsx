@@ -6,6 +6,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
 
 interface VideoType {
   id: number;
@@ -60,8 +61,19 @@ const VideoCard: React.FC<videoProps> = ({ video }) => {
     return formattedDate;
   };
 
+  const navigator = useNavigate();
+
+  const playVideo = () => {
+    navigator(`/video/${video.id}`, {
+      state: { video },
+    });
+  };
+
   return (
-    <Card className="outline-none flex flex-col gap-0 rounded-md overflow-hidden cursor-pointer bg-red-300">
+    <Card
+      className="outline-none flex flex-col gap-0 rounded-md overflow-hidden cursor-pointer bg-red-300"
+      onClick={playVideo}
+    >
       <CardHeader className="p-0 relative">
         <img className="h-full w-full object-cover" src={video.thumbnail} />
         <span className="absolute bottom-1 right-1 bg-black text-white p-1 rounded-sm">

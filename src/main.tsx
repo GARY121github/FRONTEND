@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import { Toaster } from "@/components/ui/toaster";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import AuthLayout from "@/components/Layout/auth-layout";
-import { Home, Auth, History } from "@/pages/index";
+import { Home, Auth, History, Video } from "@/pages/index";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +39,14 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <History />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/video/:id",
+        element:  (
+          <AuthLayout authentication={true}>
+            <Video />
           </AuthLayout>
         ),
       },

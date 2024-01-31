@@ -29,16 +29,11 @@ const formSchema = z.object({
   }),
 });
 
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-
 function LoginForm() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigator = useNavigate();
-
-  const { status, user } = useSelector((state: RootState) => state.auth);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,8 +52,6 @@ function LoginForm() {
       formData.append("password", values.password);
 
       setLoading(true);
-      console.log("Authenticating -> ", status);
-      console.log("User -> ", user);
       const response = await axios.post(
         "http://localhost:8000/api/v1/users/login",
         formData,
