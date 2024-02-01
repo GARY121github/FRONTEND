@@ -61,7 +61,7 @@ const VideoList: React.FC<videoProps> = ({ video }) => {
   };
 
   return (
-    <Card className="flex rounded-none p-1 cursor-pointer">
+    <Card className="flex rounded-none cursor-pointer">
       <CardHeader className="basis-1/4 p-0 relative">
         <img className="h-full w-full object-cover" src={video.thumbnail} />
         <span className="absolute bottom-1 right-1 bg-black text-white p-1 rounded-sm">
@@ -74,16 +74,17 @@ const VideoList: React.FC<videoProps> = ({ video }) => {
           {video.views} views . {formatDate(video.createdAt)}
         </p>
         <div className="flex justify-start items-center gap-2">
-          <Avatar>
+          <Avatar className="">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <h6 className="text-xl">{video.channel.name}</h6>
         </div>
-        <p>
-          {video.description.length > 100
+        <p className="line-clamp-2">
+          {/* {video.description.length > 100
             ? video.description.substring(0, 100) + "..."
-            : video.description}
+            : video.description} */}
+            {video.description}
         </p>
       </CardContent>
     </Card>

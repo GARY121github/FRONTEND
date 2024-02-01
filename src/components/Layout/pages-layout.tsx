@@ -9,17 +9,15 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
     return (
-      <Container>
-        <Navbar />
-        <div className="flex h-dvh">
-          <section className="basis-[15%] bg-slate-400 border-r-2 w-[15%] fixed h-dvh">
-            <Sidebar />
-          </section>
-          <section className="bg-blue-700 basis-[85%] ml-[15%]">
-            {children}
-          </section>
-        </div>
-      </Container>
+        <Container>
+            <Navbar />
+            <div className="flex h-dvh">
+                <section className="basis-[15%] fixed h-full w-[15%] bg-slate-400 border-r-2">
+                    <Sidebar />
+                </section>
+                <section className="bg-slate-600 overflow-auto ml-[15%] basis-[85%]">{children}</section>
+            </div>
+        </Container>
     );
 };
 
