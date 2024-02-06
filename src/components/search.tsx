@@ -2,43 +2,16 @@ import React, { useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "./ui/button";
 import { Search } from "lucide-react";
-import axios from "axios";
-import useAuth from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
-const search: React.FC = () => {
+const SearchUser: React.FC = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const search = useRef<HTMLInputElement | null>(null);
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const onSearch = async () => {
-    if (
-      search.current?.value.trim().length === 0 ||
-      search.current?.value === null
-    )
-      return;
-
-    console.log(search.current?.value);
-
-    const storedAccessToken = localStorage.getItem("accessToken");
-    console.log(localStorage);
-    console.log("access Token" , storedAccessToken);
-    if (!storedAccessToken) {
-      console.log("YOU NEED TO LOGIN FIRST");
-      return;
-    }
-
-    console.log(user);
-    const response = await axios.get(
-      `http://localhost:8000/api/v1/users/c/${search.current?.value}`,
-      {
-        headers: {
-          Authorization: `Bearer ${storedAccessToken}`,
-        },
-      }
-    );
-    console.log(response);
+    if (!search.current?.value.trim()) return;
+    navigate(`/user/${search.current?.value}`);
   };
 
   return (
@@ -56,4 +29,4 @@ const search: React.FC = () => {
   );
 };
 
-export default search;
+export default SearchUser;
