@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import CoverImage from "./cover-image";
@@ -23,34 +23,19 @@ interface ChannelDetails {
   isSubscribed: boolean;
 }
 
+interface ChannelItem {
+  title: string;
+  component: React.ReactNode;
+}
+
 const Channel: React.FC = () => {
   const { channelName } = useParams();
   const [channel, setChannel] = useState<ChannelDetails | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const { user } = useAuth();
-  const [selectedComponent, setSelectedComponent] = useState<React.ReactNode>();
-
-  const channelItems = useMemo(
-    () => [
-      {
-        title: "Videos",
-        component: <ChannelVideos username={channelName} />,
-      },
-      {
-        title: "Playlist",
-        component: <ChannelPlaylist channelId={channel?._id} />,
-      },
-      {
-        title: "Tweets",
-        component: <ChannelTweets channelId={channel?._id} />,
-      },
-      {
-        title: "Subscribed",
-        component: <ChannelSubscribed channelId={channel?._id} />,
-      },
-    ],
-    [channelName]
-  );
+  const [selectedComponent, setSelectedComponent] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [channelItems, setChannelItems] = useState<ChannelItem[]>([]);
 
   const getChannelDetails = async () => {
     try {
@@ -68,7 +53,8 @@ const Channel: React.FC = () => {
       );
       setChannel(response.data.data);
       setIsSubscribed(response.data.data.isSubscribed);
-      setSelectedComponent(channelItems[0].component);
+      setSelectedComponent(0);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching channel details:", error);
     }
@@ -96,12 +82,39 @@ const Channel: React.FC = () => {
   };
 
   const handleChannelItemsChanges = (index: number) => {
-    setSelectedComponent(channelItems[index].component);
+    setSelectedComponent(index);
   };
 
   useEffect(() => {
     getChannelDetails();
+
+    const items: ChannelItem[] = [
+      { title: "Videos", component: <ChannelVideos username={channelName} /> },
+      {
+        title: "Playlist",
+        component: <ChannelPlaylist channelId={channel?._id} />,
+      },
+      {
+        title: "Tweets",
+        component: <ChannelTweets channelId={channel?._id} />,
+      },
+    ];
+    if (user?.username === channelName) {
+      items.push({
+        title: "Subscribed",
+        component: <ChannelSubscribed channelId={channel?._id} />,
+      });
+    }
+    setChannelItems(items);
   }, [channelName, isSubscribed]);
+
+  if (loading) {
+    return (
+      <div>
+        <h1>Loading . . . .</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -141,9 +154,7 @@ const Channel: React.FC = () => {
             <div
               key={index}
               className={`text-center p-2 ${
-                selectedComponent === item.component
-                  ? "bg-white"
-                  : "hover:bg-slate-400"
+                selectedComponent === index ? "bg-white" : "hover:bg-slate-400"
               } basic-1/4 w-full cursor-pointer`}
               onClick={() => handleChannelItemsChanges(index)}
             >
@@ -153,7 +164,7 @@ const Channel: React.FC = () => {
         </div>
       </section>
       <section className="selected-component-wrapper p-4">
-        {selectedComponent}
+        {channelItems[selectedComponent]?.component}
       </section>
     </div>
   );

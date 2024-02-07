@@ -32,6 +32,7 @@ const ChannelPlaylist: React.FC<ChannelPlaylistProps> = ({ channelId }) => {
   }, [channelId]);
 
   useEffect(() => {
+    console.log("channel playlist -> " , channelId);
     if (!channelId) return;
 
     getChannelPlaylist();

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, memo, useMemo } from "react";
 import axios from "axios";
+import SubscribedChannelList from './subscribed-channel-list';
 
 interface ChannelSubscribedProps {
   channelId: string | undefined;
@@ -43,7 +44,11 @@ const ChannelSubscribed: React.FC<ChannelSubscribedProps> = ({ channelId }) => {
       {data.length === 0 ? (
         <div>No Subscribed Channels</div>
       ) : (
-        <div>Channel</div>
+        <div className="flex flex-col gap-2">
+          {data.map((channel) => (
+            <SubscribedChannelList username={channel?.subscribedChannel?.username} avatar={channel?.subscribedChannel?.avatar}/>
+          ))}
+        </div>
       )}
     </div>
   );
