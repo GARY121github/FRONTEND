@@ -38,7 +38,7 @@ function SideBar() {
     {
       title: "My Content",
       logo: <Video />,
-      navigation: `/user/${user?.username}`,
+      navigation: `/@${user?.username}`,
     },
     {
       title: "Collections",

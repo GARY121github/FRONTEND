@@ -1,53 +1,77 @@
-import React, { useEffect, memo, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
-interface ChannelVideosProps {
-  username: string | undefined;
+interface Video {
+  // Define the structure of a video
+  id: string;
+  title: string;
+  // Add more properties if available
 }
 
-const ChannelVideos: React.FC<ChannelVideosProps> = ({ username }) => {
-  const [data, setData] = useState([]);
+interface ChannelVideosProps {
+  channelName: string;
+}
 
-  const getUsersVideo = useMemo(() => {
-    return async () => {
-      try {
-        const storedAccessToken = localStorage.getItem("accessToken");
-        if (!storedAccessToken) {
-          console.log("YOU NEED TO LOGIN FIRST");
-          return;
-        }
+const ChannelVideos: React.FC<ChannelVideosProps> = ({ channelName }) => {
+  const [videos, setVideos] = useState<Video[]>([]); // Specify the type for videos as an array of Video
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-        const res = await axios.get(
-          `http://localhost:8000/api/v1/videos/v/${username}`,
-          {
-            headers: { Authorization: `Bearer ${storedAccessToken}` },
-          }
-        );
-        console.log(username, res);
-        setData(res.data.data);
-      } catch (error) {
-        console.error("Error fetching user's videos:", error);
+  const fetchVideos = async () => {
+    try {
+      const storedAccessToken = localStorage.getItem("accessToken");
+      if (!storedAccessToken) {
+        // If there's no stored access token, show a toast message and navigate to the login page
+        toast({
+          variant: "destructive",
+          title: "Unauthorized",
+          description: "You need to log in first to access this page.",
+        });
+        navigate("/login");
+        return;
       }
-    };
-  }, [username]);
+
+      const response = await axios.get(
+        `http://localhost:8000/api/v1/videos/v/${channelName.substring(1)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${storedAccessToken}`,
+          },
+        }
+      );
+
+      // Update state with fetched videos
+      setVideos(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      // Handle errors gracefully
+      console.error("Error fetching videos:", error);
+      // You might want to show a toast message here as well
+    }
+  };
 
   useEffect(() => {
-    if (!username) return;
-
-    getUsersVideo();
-  }, [getUsersVideo, username]);
+    fetchVideos();
+    console.log("Videos fetched");
+  }, []);
 
   return (
-    <div>
-      {data.length === 0 ? (
-        <div>No videos found</div>
+    <>
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : videos.length === 0 ? ( // Check if there are no videos
+        <h1>No videos yet</h1>
       ) : (
-        <div>Videos</div>
+        <>
+          <h1>Videos Page</h1>
+          {/* Render videos here */}
+        </>
       )}
-    </div>
+    </>
   );
 };
 
-export default memo(ChannelVideos, (prevProps, nextProps) => {
-  return prevProps.username === nextProps.username;
-});
+export default ChannelVideos;

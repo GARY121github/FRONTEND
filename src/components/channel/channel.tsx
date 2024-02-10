@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, {
+  useEffect,
+  useState,
+  useMemo,
+  ReactNode,
+  useCallback,
+} from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
-import CoverImage from "./cover-image";
-import ProfileImage from "./profile-image";
-import { Button } from "@/components/ui/button";
-import { BellPlus, BellMinus } from "lucide-react";
+import ChannelCoverImage from "./channel-coverImage";
+import ChannelAvatar from "./channel-avatar";
+import { Button } from "../ui/button";
 import useAuth from "@/hooks/useAuth";
-import ChannelPlaylist from "./channel-playlist";
-import ChannelSubscribed from "./channel-subscribed";
+import ChannelPlaylists from "./channel-playlist";
+import ChannelsSubscribed from "./channel-subscribed";
 import ChannelTweets from "./channel-tweets";
 import ChannelVideos from "./channel-videos";
 
 interface ChannelDetails {
   _id: string;
   username: string;
-  email: string;
   fullName: string;
   avatar: string;
   coverImage: string;
@@ -24,148 +29,191 @@ interface ChannelDetails {
 }
 
 interface ChannelItem {
-  title: string;
-  component: React.ReactNode;
+  name: string;
+  component: ReactNode;
 }
 
-const Channel: React.FC = () => {
-  const { channelName } = useParams();
-  const [channel, setChannel] = useState<ChannelDetails | null>(null);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+const Channel = () => {
+  const { channelName } = useParams<{ channelName: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const { user } = useAuth();
-  const [selectedComponent, setSelectedComponent] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [channelItems, setChannelItems] = useState<ChannelItem[]>([]);
+  const [channel, setChannel] = useState<ChannelDetails | null>(null);
+  const [reloadChannel, setReloadChannel] = useState(false);
 
-  const getChannelDetails = async () => {
-    try {
-      const storedAccessToken = localStorage.getItem("accessToken");
-      if (!storedAccessToken) {
-        console.log("YOU NEED TO LOGIN FIRST");
-        return;
-      }
+  const [component, setComponent] = useState<ReactNode>();
 
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/users/c/${channelName}`,
-        {
-          headers: { Authorization: `Bearer ${storedAccessToken}` },
+  const fetchChannelDetails = useCallback(
+    async (channelName: string | undefined) => {
+      try {
+        const storedAccessToken = localStorage.getItem("accessToken");
+        if (!storedAccessToken) {
+          toast({
+            variant: "destructive",
+            title: "Unauthorized",
+            description: "You need to login first to access this page.",
+          });
+          navigate("/login");
+          return;
         }
-      );
-      setChannel(response.data.data);
-      setIsSubscribed(response.data.data.isSubscribed);
-      setSelectedComponent(0);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching channel details:", error);
-    }
-  };
 
-  const toggleSubscription = async () => {
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/users/c/${channelName?.substring(1)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${storedAccessToken}`,
+            },
+          }
+        );
+        const channelData = response.data.data;
+
+        setChannel(channelData);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch channel details.",
+        });
+        navigate("/channel-not-found");
+      }
+    },
+    [toast, navigate]
+  );
+
+  const toggelSubscription = useCallback(async () => {
     try {
       const storedAccessToken = localStorage.getItem("accessToken");
       if (!storedAccessToken) {
-        console.log("YOU NEED TO LOGIN FIRST");
+        toast({
+          variant: "destructive",
+          title: "Unauthorized",
+          description: "You need to login first to access this page.",
+        });
+        navigate("/login");
         return;
       }
 
       const response = await axios.post(
         `http://localhost:8000/api/v1/subscriptions/c/${channel?._id}`,
         {},
-        { headers: { Authorization: `Bearer ${storedAccessToken}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${storedAccessToken}`,
+          },
+        }
       );
-      setIsSubscribed((prev) => !prev);
-      handleChannelItemsChanges(0);
       console.log(response);
+      // Set reloadChannel to true to trigger page reload
+      setReloadChannel(true);
     } catch (error) {
-      console.error("Error toggling subscription:", error);
+      console.log(error);
     }
-  };
-
-  const handleChannelItemsChanges = (index: number) => {
-    setSelectedComponent(index);
-  };
+  }, [channel, toast, navigate]);
 
   useEffect(() => {
-    getChannelDetails();
+    fetchChannelDetails(channelName);
+  }, [channelName, fetchChannelDetails, reloadChannel]);
+
+  useEffect(() => {
+    // Reset reloadChannel after the effect is triggered
+    setReloadChannel(false);
+  }, [reloadChannel]);
+
+  const channelItems = useMemo<ChannelItem[]>(() => {
+    if (!channel || !channelName) return [];
 
     const items: ChannelItem[] = [
-      { title: "Videos", component: <ChannelVideos username={channelName} /> },
       {
-        title: "Playlist",
-        component: <ChannelPlaylist channelId={channel?._id} />,
+        name: "Videos",
+        component: <ChannelVideos channelName={channelName} />,
       },
       {
-        title: "Tweets",
-        component: <ChannelTweets channelId={channel?._id} />,
+        name: "Playlists",
+        //   channelId: channel._id,
+        // },
+        component: <ChannelPlaylists channelId={channel._id} />,
+      },
+      {
+        name: "Tweets",
+        component: <ChannelTweets channelId={channel._id} />,
       },
     ];
-    if (user?.username === channelName) {
+
+    if (user?.username === channelName?.substring(1)) {
       items.push({
-        title: "Subscribed",
-        component: <ChannelSubscribed channelId={channel?._id} />,
+        name: "Subscribed",
+        component: <ChannelsSubscribed channelId={channel._id} />,
       });
     }
-    setChannelItems(items);
-  }, [channelName, isSubscribed]);
 
-  if (loading) {
-    return (
-      <div>
-        <h1>Loading . . . .</h1>
-      </div>
-    );
-  }
+    setComponent(<ChannelVideos channelName={channelName} />);
+    return items;
+  }, [channel, user, channelName]);
+
+  const handleItemClick = (index: number) => {
+    setComponent(channelItems[index].component);
+  };
 
   return (
     <div className="flex flex-col gap-2">
       <section>
-        <div className="relative">
-          <CoverImage edit={false} coverImage={channel?.coverImage} />
-          <div className=" absolute -bottom-14 left-4">
-            <ProfileImage edit={false} avatar={channel?.avatar} />
+        {channel && (
+          <div className="relative">
+            <ChannelCoverImage coverImage={channel.coverImage} />
+            <ChannelAvatar
+              avatar={channel.avatar}
+              className="h-36 w-36 absolute -bottom-14 left-4"
+            />
           </div>
-        </div>
-        <div className="flex justify-between ml-32 p-3 items-center">
-          <div>
-            <h3 className="text-white text-xl">{channel?.fullName}</h3>
-            <p className="text-slate-200">
-              @{channel?.username} | {channel?.subscribersCount} subscribers |{" "}
-              {channel?.channelsSubscriberToCount} subscribed
-            </p>
-          </div>
-          {user?.username !== channel?.username && (
-            <div onClick={toggleSubscription}>
-              {isSubscribed ? (
-                <Button className="bg-green-600 hover:bg-green-500">
-                  <BellMinus /> &nbsp; &nbsp; Subscribed
-                </Button>
-              ) : (
-                <Button className="bg-red-600 hover:bg-red-700">
-                  <BellPlus /> &nbsp; &nbsp; Subscribe
-                </Button>
-              )}
+        )}
+      </section>
+      <section>
+        {channel && (
+          <div className="ml-[10rem] -mt-2 p-2 flex justify-between items-center">
+            <div>
+              <h2 className="text-white text-2xl">@{channel.username}</h2>
+              <h3 className="text-white text-xl">
+                {channel.fullName.toLowerCase()} |{" "}
+                <span className="text-lg text-slate-200">
+                  {channel.subscribersCount} subscribers
+                </span>
+              </h3>
             </div>
-          )}
-        </div>
+            {user?.username !== channelName?.substring(1) && (
+              <Button
+                className={`${
+                  channel.isSubscribed
+                    ? "bg-gray-500 hover:bg-gray-600"
+                    : "bg-red-500 hover:bg-red-600"
+                }`}
+                onClick={toggelSubscription}
+              >
+                {channel.isSubscribed ? "Subscribed" : "Subscribe"}
+              </Button>
+            )}
+          </div>
+        )}
       </section>
       <section className="p-2">
-        <div className="flex justify-around border-b-2">
-          {channelItems.map((item, index) => (
-            <div
-              key={index}
-              className={`text-center p-2 ${
-                selectedComponent === index ? "bg-white" : "hover:bg-slate-400"
-              } basic-1/4 w-full cursor-pointer`}
-              onClick={() => handleChannelItemsChanges(index)}
-            >
-              <h3 className="text-xl">{item.title}</h3>
-            </div>
-          ))}
-        </div>
+        {channel && (
+          <div className="flex mt-2 items-center justify-between border-b-2">
+            {channelItems.map((item, index) => (
+              <div
+                className={`p-2 text-xl cursor-pointer hover:bg-white hover:text-black transition-all duration-300 ease-in-out w-full text-center ${
+                  component === channelItems[index].component
+                    ? "bg-white text-black"
+                    : "text-white"
+                }`}
+                key={index}
+                onClick={() => handleItemClick(index)}
+              >
+                {item.name}
+              </div>
+            ))}
+          </div>
+        )}
       </section>
-      <section className="selected-component-wrapper p-4">
-        {channelItems[selectedComponent]?.component}
-      </section>
+      <section>{component}</section>
     </div>
   );
 };

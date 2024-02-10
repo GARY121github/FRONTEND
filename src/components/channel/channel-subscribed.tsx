@@ -1,59 +1,101 @@
-import React, { useState, useEffect, memo, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import SubscribedChannelList from './subscribed-channel-list';
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
+import ChannelAvatar from "./channel-avatar";
 
-interface ChannelSubscribedProps {
-  channelId: string | undefined;
+interface SubscribedChannel {
+  _id: string;
+  fullName: string;
+  username: string;
+  avatar: string;
+  coverImage: string;
+  email: string;
 }
 
-const ChannelSubscribed: React.FC<ChannelSubscribedProps> = ({ channelId }) => {
-  const [data, setData] = useState([]);
+interface SubscribedChannelWithUsername extends SubscribedChannel {
+  username: string;
+}
 
-  const getSubscribedUsers = useMemo(() => {
-    return async () => {
-      try {
-        const storedAccessToken = localStorage.getItem("accessToken");
-        if (!storedAccessToken) {
-          console.log("YOU NEED TO LOGIN FIRST");
-          return;
-        }
+interface SubscribedChannelsProps {
+  channelId: string;
+}
 
-        const res = await axios.get(
-          `http://localhost:8000/api/v1/subscriptions/c/${channelId}`,
-          {
-            headers: { Authorization: `Bearer ${storedAccessToken}` },
-          }
-        );
-        console.log(channelId, res);
-        setData(res.data.data);
-      } catch (error) {
-        console.error("Error fetching channel subscribed:", error);
+const SubscribedChannels: React.FC<SubscribedChannelsProps> = ({
+  channelId,
+}) => {
+  const [channels, setChannels] = useState<SubscribedChannelWithUsername[]>([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const fetchSubscribedChannels = async () => {
+    try {
+      const storedAccessToken = localStorage.getItem("accessToken");
+      if (!storedAccessToken) {
+        // If there's no stored access token, show a toast message and navigate to the login page
+        toast({
+          variant: "destructive",
+          title: "Unauthorized",
+          description: "You need to log in first to access this page.",
+        });
+        navigate("/login");
+        return;
       }
-    };
-  }, [channelId]);
+
+      const response = await axios.get(
+        `http://localhost:8000/api/v1/subscriptions/c/${channelId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${storedAccessToken}`,
+          },
+        }
+      );
+
+      // Update state with fetched subscribed channels
+      console.log(response);
+      setChannels(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      // Handle errors gracefully
+      console.error("Error fetching subscribed channels:", error);
+      // You might want to show a toast message here as well
+    }
+  };
 
   useEffect(() => {
-    console.log("channel subscribers -> ", channelId);
-    if (!channelId) return;
-
-    getSubscribedUsers();
-  }, [getSubscribedUsers, channelId]);
+    fetchSubscribedChannels();
+  }, [channelId]); // Trigger the effect when channelId changes
 
   return (
-    <div>
-      {data.length === 0 ? (
-        <div>No Subscribed Channels</div>
+    <>
+      {loading ? (
+        // Render loading state if data is being fetched
+        <div>Loading...</div>
+      ) : channels.length === 0 ? (
+        // Render message when no subscribed channels available
+        <div>No Subscribed Channels Available</div>
       ) : (
-        <div className="flex flex-col gap-2">
-          {data.map((channel) => (
-            <SubscribedChannelList username={channel?.subscribedChannel?.username} avatar={channel?.subscribedChannel?.avatar}/>
-          ))}
+        <div className="p-2 ">
+          <ul className="flex flex-col gap-2">
+            {channels.map((channel) => (
+              <li key={channel._id} className="bg-slate-300">
+                <div className="flex justify-between p-2">
+                  <div className="flex gap-2 items-center">
+                    <ChannelAvatar
+                      className="h-14 w-14"
+                      avatar={channel.avatar}
+                    />
+                    <h3 className="text-xl">@{channel.username}</h3>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
-export default memo(ChannelSubscribed, (prevProps, nextProps) => {
-  return prevProps.channelId === nextProps.channelId;
-});
+export default SubscribedChannels;

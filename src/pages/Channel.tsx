@@ -1,11 +1,11 @@
 import React from "react";
+import ChannelComponent from "@/components/Channel/channel";
 import Layout from "@/components/Layout/pages-layout";
-import ChannelDetails from "@/components/channel/channel";
 
 const Channel = () => {
   return (
     <Layout>
-      <ChannelDetails />
+      <ChannelComponent />
     </Layout>
   );
 };

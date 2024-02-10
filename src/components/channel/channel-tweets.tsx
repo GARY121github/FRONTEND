@@ -1,49 +1,81 @@
-import React, { useState, useEffect, memo, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
-interface ChannelTweetsProps {
-  channelId: string | undefined
+interface Tweet {
+  id: string;
+  text: string;
+  // Add more properties if available
 }
 
-const ChannelTweets:React.FC<ChannelTweetsProps> = ({channelId}) => {
-  const [data, setData] = useState([]);
+interface ChannelTweetsProps {
+  channelId: string;
+}
 
-  const getChannelTweets = useMemo(() => {
-    return async () => {
-      try {
-        const storedAccessToken = localStorage.getItem("accessToken");
-        if (!storedAccessToken) {
-          console.log("YOU NEED TO LOGIN FIRST");
-          return;
-        }
+const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
+  const [tweets, setTweets] = useState<Tweet[]>([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-        const res = await axios.get(
-          `http://localhost:8000/api/v1/tweets/user/${channelId}`,
-          {
-            headers: { Authorization: `Bearer ${storedAccessToken}` },
-          }
-        );
-        console.log(channelId, res);
-        setData(res.data.data);
-      } catch (error) {
-        console.error("Error fetching channel tweet:", error);
+  const fetchTweets = async () => {
+    try {
+      const storedAccessToken = localStorage.getItem("accessToken");
+      if (!storedAccessToken) {
+        // If there's no stored access token, show a toast message and navigate to the login page
+        toast({
+          variant: "destructive",
+          title: "Unauthorized",
+          description: "You need to log in first to access this page.",
+        });
+        navigate("/login");
+        return;
       }
-    };
-  }, [channelId]);
+
+      const response = await axios.get(
+        `http://localhost:8000/api/v1/tweets/user/${channelId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${storedAccessToken}`,
+          },
+        }
+      );
+      console.log(response);
+      // Update state with fetched tweets
+      setTweets(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      // Handle errors gracefully
+      console.error("Error fetching tweets:", error);
+      // You might want to show a toast message here as well
+    }
+  };
 
   useEffect(() => {
-    if (!channelId) return;
-
-    getChannelTweets();
-  }, [getChannelTweets, channelId]);
+    fetchTweets();
+  }, []);
 
   return (
-    <div>
-      {data.length === 0 ? <div>No tweets found</div> : <div>Tweets</div>}
-    </div>
+    <>
+      {loading ? ( // Render loading state if data is being fetched
+        <div>Loading...</div>
+      ) : tweets.length === 0 ? ( // Render message when no tweets available
+        <div>No Tweets Available</div>
+      ) : (
+        <div>
+          {/* Render tweets here */}
+          <h1>Tweets</h1>
+          {/* Example: Render each tweet */}
+          <ul>
+            {tweets.map((tweet) => (
+              <li key={tweet.id}>{tweet.text}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </>
   );
 };
 
-export default memo(ChannelTweets, (prevProps, nextProps) => {
-  return prevProps.channelId === nextProps.channelId;
-});
+export default ChannelTweets;

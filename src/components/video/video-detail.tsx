@@ -76,7 +76,7 @@ const VideoDetails = () => {
             </div>
           </CardHeader>
           <CardContent className="flex justify-between items-center">
-            <ChannelDetails channelName={"falgun"}/>
+            <ChannelDetails channelName={"falgun"} />
           </CardContent>
           <CardFooter>
             <p>{video.description}</p>

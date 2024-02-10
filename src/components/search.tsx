@@ -11,7 +11,7 @@ const SearchUser: React.FC = () => {
 
   const onSearch = async () => {
     if (!search.current?.value.trim()) return;
-    navigate(`/user/${search.current?.value}`);
+    navigate(`/@${search.current?.value}`);
   };
 
   return (
