@@ -11,11 +11,14 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': {
-        target: 'http://localhost:8000',  // Target should not include the "/api/v1/"
+      "/api": {
+        target: "http://localhost:8000", // Target should not include the "/api/v1/"
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),  // Rewrite the path to remove "/api" prefix
+        rewrite: (path) => path.replace(/^\/api/, ""), // Rewrite the path to remove "/api" prefix
       },
     },
   },
-})
+  optimizeDeps: {
+    exclude: [""],
+  },
+});

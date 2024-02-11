@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import AuthLayout from "@/components/Layout/auth-layout";
 import { Home, Auth, History, Video } from "@/pages/index";
+import VideoUploadModal from "./components/video/video-upload-modal.tsx";
 
 const router = createBrowserRouter([
   {
@@ -44,11 +45,15 @@ const router = createBrowserRouter([
       },
       {
         path: "/video/:id",
-        element:  (
+        element: (
           <AuthLayout authentication={true}>
             <Video />
           </AuthLayout>
         ),
+      },
+      {
+        path: "/video/videoModal",
+        element: <VideoUploadModal />,
       },
     ],
   },
