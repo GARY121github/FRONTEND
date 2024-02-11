@@ -61,6 +61,7 @@ const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
       {loading ? ( // Render loading state if data is being fetched
         <div>Loading...</div>
       ) : tweets.length === 0 ? ( // Render message when no tweets available
+        // TODO: Add a message to show when there are no tweets
         <div>No Tweets Available</div>
       ) : (
         <div>

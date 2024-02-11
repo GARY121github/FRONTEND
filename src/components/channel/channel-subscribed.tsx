@@ -1,8 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "../ui/button";
 import ChannelAvatar from "./channel-avatar";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface SubscribedChannel {
   _id: string;
@@ -63,6 +73,36 @@ const SubscribedChannels: React.FC<SubscribedChannelsProps> = ({
     }
   };
 
+  const toggelSubscription = useCallback(
+    async (channel: string) => {
+      try {
+        const storedAccessToken = localStorage.getItem("accessToken");
+        if (!storedAccessToken) {
+          toast({
+            variant: "destructive",
+            title: "Unauthorized",
+            description: "You need to login first to access this page.",
+          });
+          navigate("/login");
+          return;
+        }
+
+        await axios.post(
+          `http://localhost:8000/api/v1/subscriptions/c/${channel}`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${storedAccessToken}`,
+            },
+          }
+        );
+        fetchSubscribedChannels();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [toast, navigate]
+  );
   useEffect(() => {
     fetchSubscribedChannels();
   }, [channelId]); // Trigger the effect when channelId changes
@@ -80,7 +120,7 @@ const SubscribedChannels: React.FC<SubscribedChannelsProps> = ({
           <ul className="flex flex-col gap-2">
             {channels.map((channel) => (
               <li key={channel._id} className="bg-slate-300">
-                <div className="flex justify-between p-2">
+                <div className="flex justify-between p-2 items-center">
                   <div className="flex gap-2 items-center">
                     <ChannelAvatar
                       className="h-14 w-14"
@@ -88,6 +128,28 @@ const SubscribedChannels: React.FC<SubscribedChannelsProps> = ({
                     />
                     <h3 className="text-xl">@{channel.username}</h3>
                   </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger>
+                      <Button className="bg-gray-500 hover:bg-gray-600">
+                        Subscribed
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-center">
+                          Unsubscribe from @{channel.username}?
+                        </AlertDialogTitle>
+                      </AlertDialogHeader>
+
+                      <AlertDialogCancel>cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        className="ml-2"
+                        onClick={() => toggelSubscription(channel._id)}
+                      >
+                        unsubscribe
+                      </AlertDialogAction>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </li>
             ))}

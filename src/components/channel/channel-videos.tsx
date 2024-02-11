@@ -62,7 +62,9 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({ channelName }) => {
     <>
       {loading ? (
         <h1>Loading...</h1>
-      ) : videos.length === 0 ? ( // Check if there are no videos
+      ) : videos.length === 0 ? ( 
+        // TODO: Add a message to show when there are no videos
+        // Check if there are no videos
         <h1>No videos yet</h1>
       ) : (
         <>
