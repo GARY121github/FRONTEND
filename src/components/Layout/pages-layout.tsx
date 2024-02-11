@@ -12,10 +12,10 @@ const Layout = ({ children }: LayoutProps) => {
         <Container>
             <Navbar />
             <div className="flex h-dvh">
-                <section className="basis-[15%] fixed h-full w-[15%] bg-slate-400 border-r-2">
+                <section className="basis-[15%] fixed h-full w-[15%] bg-slate-400 border-r-2 z-10">
                     <Sidebar />
                 </section>
-                <section className="bg-slate-600 overflow-auto ml-[15%] basis-[85%]">{children}</section>
+                <section className="bg-slate-600 overflow-y-auto ml-[15%] basis-[85%]">{children}</section>
             </div>
         </Container>
     );

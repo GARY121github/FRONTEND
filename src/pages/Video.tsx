@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "@/components/Layout/pages-layout";
 import VideoPlayer from "@/components/video/video-detail";
 import VideoList from "@/components/video/video-list";
+import VideoUploadModal from "@/components/video/video-upload-modal";
 interface Video {
   id: number;
   title: string;
