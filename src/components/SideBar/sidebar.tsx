@@ -10,8 +10,11 @@ import {
   HelpCircle,
 } from "lucide-react";
 import SideBarItems from "./sidebar-item";
+import useAuth from "@/hooks/useAuth";
 
-function sidebar() {
+function SideBar() {
+  const { user } = useAuth();
+
   const topElements: Array<{
     title: string;
     logo: JSX.Element;
@@ -35,7 +38,7 @@ function sidebar() {
     {
       title: "My Content",
       logo: <Video />,
-      navigation: "/my-content",
+      navigation: `/@${user?.username}`,
     },
     {
       title: "Collections",
@@ -105,4 +108,4 @@ function sidebar() {
   );
 }
 
-export default sidebar;
+export default SideBar;

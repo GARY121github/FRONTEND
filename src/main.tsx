@@ -7,8 +7,14 @@ import { Provider } from "react-redux";
 import { Toaster } from "@/components/ui/toaster";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import AuthLayout from "@/components/Layout/auth-layout";
-import { Home, Auth, History, Video } from "@/pages/index";
-import VideoUploadModal from "./components/video/video-upload-modal.tsx";
+import {
+  Home,
+  Auth,
+  History,
+  Video,
+  Channel,
+  ChannelNotFound,
+} from "@/pages/index";
 
 const router = createBrowserRouter([
   {
@@ -46,8 +52,24 @@ const router = createBrowserRouter([
       {
         path: "/video/:id",
         element: (
+          // <AuthLayout authentication={true}>
+          <Video />
+          // </AuthLayout>
+        ),
+      },
+      {
+        path: "/:channelName",
+        element: (
           <AuthLayout authentication={true}>
-            <Video />
+            <Channel />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/channel-not-found",
+        element: (
+          <AuthLayout authentication={true}>
+            <ChannelNotFound />
           </AuthLayout>
         ),
       },
