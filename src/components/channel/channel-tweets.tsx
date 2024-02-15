@@ -4,11 +4,24 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { MessageCircle } from "lucide-react";
 import Empty from "../empty";
+import AddTweet from "../Tweet/add-tweet";
+import Tweet from "../Tweet/tweet";
+import ChannelAvatar from "./channel-avatar";
+import useAuth from "@/hooks/useAuth";
+
+interface Owner {
+  _id: string;
+  avatar: string;
+  fullName: string;
+  username: string;
+}
 
 interface Tweet {
-  id: string;
-  text: string;
-  // Add more properties if available
+  _id: string;
+  content: string;
+  createdAt: string; // Assuming you'll parse this into a Date object later
+  updatedAt: string; // Assuming you'll parse this into a Date object later
+  owner: Owner;
 }
 
 interface ChannelTweetsProps {
@@ -17,9 +30,11 @@ interface ChannelTweetsProps {
 
 const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
   const [tweets, setTweets] = useState<Tweet[]>([]);
+  const [rerender, setRerender] = useState(false);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const fetchTweets = async () => {
     try {
@@ -56,10 +71,11 @@ const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
 
   useEffect(() => {
     fetchTweets();
-  }, []);
+  }, [rerender]);
 
   return (
     <>
+      {user?._id === channelId && <AddTweet setRerender={setRerender} />}
       {loading ? ( // Render loading state if data is being fetched
         <div>Loading...</div>
       ) : tweets.length === 0 ? ( // Render message when no tweets available
@@ -78,15 +94,24 @@ const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
           }
         />
       ) : (
-        <div>
-          {/* Render tweets here */}
-          <h1>Tweets</h1>
-          {/* Example: Render each tweet */}
-          <ul>
-            {tweets.map((tweet) => (
-              <li key={tweet.id}>{tweet.text}</li>
-            ))}
-          </ul>
+        <div className="flex flex-col gap-2 p-2 ">
+          {tweets.map((tweet) => (
+            <div className="flex gap-3 bg-slate-300 p-2 rounded-xl">
+              <ChannelAvatar
+                className="h-14 w-14"
+                avatar={tweet.owner.avatar}
+              />
+              <Tweet
+                channelId={channelId}
+                key={tweet._id}
+                tweetId={tweet._id}
+                text={tweet.content}
+                fullName={tweet.owner.fullName}
+                time={tweet.updatedAt}
+                setRerender={setRerender}
+              />
+            </div>
+          ))}
         </div>
       )}
     </>
