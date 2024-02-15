@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { MessageCircle } from "lucide-react";
+import Empty from "../empty";
 import AddTweet from "../Tweet/add-tweet";
 import Tweet from "../Tweet/tweet";
 import ChannelAvatar from "./channel-avatar";
@@ -78,7 +80,19 @@ const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
         <div>Loading...</div>
       ) : tweets.length === 0 ? ( // Render message when no tweets available
         // TODO: Add a message to show when there are no tweets
-        <div>No Tweets Available</div>
+        <Empty
+          className="w-full my-auto min-h-96"
+          icon={
+            <MessageCircle
+              className="bg-sky-700 pl-3 p-2 rounded-full"
+              size={50}
+            />
+          }
+          title={"No Tweets Available"}
+          description={
+            "There are no tweets here available. Please try to search some thing else."
+          }
+        />
       ) : (
         <div className="flex flex-col gap-2 p-2 ">
           {tweets.map((tweet) => (

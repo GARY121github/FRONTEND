@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import Empty from "../empty";
+import { Play } from "lucide-react";
 
 interface Video {
   // Define the structure of a video
@@ -62,10 +64,17 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({ channelName }) => {
     <>
       {loading ? (
         <h1>Loading...</h1>
-      ) : videos.length === 0 ? ( 
+      ) : videos.length === 0 ? (
         // TODO: Add a message to show when there are no videos
         // Check if there are no videos
-        <h1>No videos yet</h1>
+        <Empty
+          className=""
+          icon={<Play className="bg-sky-700 pl-3 p-2 rounded-full" size={50} />}
+          title={"No Videos Available"}
+          description={
+            "There are no videos here available. Please try to search some thing else."
+          }
+        />
       ) : (
         <>
           <h1>Videos Page</h1>
