@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import {
   Form,
   FormControl,
@@ -18,9 +16,57 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Upload } from "lucide-react";
 
+const MAX_FILE_SIZE = 5000000; // 5MB
+function checkVideoFileType(file: File) {
+  if (file?.name) {
+    const fileType = file.name.split(".").pop();
+    if (
+      fileType === "mp4" ||
+      fileType === "mov" ||
+      fileType === "webm" ||
+      fileType === "avi" ||
+      fileType === "mkv" ||
+      fileType === "flv" ||
+      fileType === "wmv"
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkImageFileType(file: File) {
+  if (file?.name) {
+    const fileType = file.name.split(".").pop();
+    if (
+      fileType === "jpg" ||
+      fileType === "jpeg" ||
+      fileType === "png" ||
+      fileType === "gif"
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const formSchema = z.object({
-  videoSelect: z.any(),
-  thumbnail: z.any(),
+  videoSelect: z
+    .any()
+    .refine((file) => file?.length !== 0, "File is required")
+    .refine((file) => file.size < MAX_FILE_SIZE, "Max size is 5MB.")
+    .refine(
+      (file) => checkVideoFileType(file),
+      "Only .mp4, .mov, .webm, .avi, .mkv, .flv, .wmv formats are supported."
+    ),
+  thumbnail: z
+    .any()
+    .refine((file) => file?.length !== 0, "File is required")
+    .refine((file) => file.size < MAX_FILE_SIZE, "Max size is 5MB.")
+    .refine(
+      (file) => checkImageFileType(file),
+      "Only .jpg, .jpeg, .png, .gif formats are supported."
+    ),
   title: z.string().min(4, {
     message: "Please enter a title.",
   }),
@@ -46,17 +92,20 @@ const VideoUploadForm = () => {
     console.log(values);
   }
 
-  // console.log(form.getValues());
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 text-white"
+      >
         <FormField
           control={form.control}
           name="videoSelect"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Upload Videos</FormLabel>
+              <FormLabel>
+                Upload Videos<sup>*</sup>
+              </FormLabel>
               <FormControl>
                 <div
                   className={`flex flex-col items-center justify-center w-full h-96 border-4 border-dashed py-[10%] ${
@@ -79,22 +128,19 @@ const VideoUploadForm = () => {
                     <div className="text-4xl bg-purple-300 p-4 rounded-full">
                       <Upload className="text-purple-500" size={67} />
                     </div>
-                    <p className="text-sm text-gray-400 font-semibold">
+                    <p className="text-sm text-white font-semibold">
                       Drag and drop video files to upload
                     </p>
                     <p>Your videos will be private untill you publish them.</p>
-                    <div className="h-10 w-[40%] relative bg-gray-500 mt-2">
-                      <label
-                        htmlFor="videoUpload"
-                        className="flex absolute -top-1 -left-1 bg-purple-500 h-full w-full text-white cursor-pointer hover:bg-purple-600 items-center justify-center"
-                      >
-                        <p className="text-center text-black font-bold text-lg">
+                    <div className="h-10 w-[40%] relative mt-2">
+                      <label htmlFor="videoUpload">
+                        <p className="group/btn mr-1 w-full items-center gap-x-2 bg-[#ae7aff] hover:bg-[#9c60fe] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e]">
                           Select Files
                         </p>
                         <Input
                           id="videoUpload"
                           type="file"
-                          className="rounded-none hidden"
+                          className="hidden"
                           onChange={(e) =>
                             field.onChange(
                               e.target.files ? e.target.files[0] : null
@@ -112,14 +158,16 @@ const VideoUploadForm = () => {
         />
         <FormField
           control={form.control}
-          name="videoSelect"
+          name="thumbnail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Thumbnail</FormLabel>
+              <FormLabel>
+                Thumbnail<sup>*</sup>
+              </FormLabel>
               <FormControl>
                 <Input
                   type="file"
-                  className="rounded-none"
+                  className="w-full h-full border p-1 file:mr-4 file:border-none file:bg-[#ae7aff] file:px-3 file:py-1.5 rounded-none"
                   onChange={(e) =>
                     field.onChange(e.target.files ? e.target.files[0] : null)
                   }
@@ -131,10 +179,12 @@ const VideoUploadForm = () => {
         />
         <FormField
           control={form.control}
-          name="videoSelect"
+          name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>
+                Title<sup>*</sup>
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="This is video title..."
@@ -151,11 +201,13 @@ const VideoUploadForm = () => {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>
+                Description<sup>*</sup>
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="This is video description..."
-                  className="rounded-none"
+                  className="rounded-none focus-visible:ring-transparent focus-visible:ring-0 focus-visible:ring-offset-0 bg-inherit"
                   rows={6}
                   {...field}
                 />
@@ -164,7 +216,9 @@ const VideoUploadForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <button className="group/btn mr-1 w-full items-center gap-x-2 bg-[#ae7aff] hover:bg-[#9c60fe] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e]">
+          Upload
+        </button>
       </form>
     </Form>
   );

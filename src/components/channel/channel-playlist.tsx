@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import Empty from "../empty";
+import { Folder } from "lucide-react";
 
 interface Playlist {
   id: string;
@@ -61,7 +63,16 @@ const ChannelPlaylist: React.FC<ChannelPlaylistProps> = ({ channelId }) => {
       {loading ? ( // Render loading state if data is being fetched
         <div>Loading...</div>
       ) : playlists.length === 0 ? ( // Render message when no playlists available
-        <div>No Playlist Available</div>
+        <Empty
+          className="w-full my-auto min-h-96"
+          icon={
+            <Folder className="bg-sky-700 pl-3 p-2 rounded-full" size={50} />
+          }
+          title={"No Playlist Available"}
+          description={
+            "There are no playlists here available. Please try to search some thing else."
+          }
+        />
       ) : (
         <div>
           {/* Render playlists here */}

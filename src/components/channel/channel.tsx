@@ -16,6 +16,7 @@ import ChannelPlaylists from "./channel-playlist";
 import ChannelsSubscribed from "./channel-subscribed";
 import ChannelTweets from "./channel-tweets";
 import ChannelVideos from "./channel-videos";
+import UploadVideo from "@/components/Modals/video-upload-modal";
 
 interface ChannelDetails {
   _id: string;
@@ -179,7 +180,7 @@ const Channel = () => {
                 </span>
               </h3>
             </div>
-            {user?.username !== channelName?.substring(1) && (
+            {user?.username !== channelName?.substring(1) ? (
               <Button
                 className={`${
                   channel.isSubscribed
@@ -190,6 +191,8 @@ const Channel = () => {
               >
                 {channel.isSubscribed ? "Subscribed" : "Subscribe"}
               </Button>
+            ) : (
+              <UploadVideo />
             )}
           </div>
         )}

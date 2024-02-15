@@ -12,7 +12,11 @@ import {
 import SideBarItems from "./sidebar-item";
 import useAuth from "@/hooks/useAuth";
 
-function SideBar() {
+interface SideBarProps {
+  className?: string;
+}
+
+const SideBar: React.FC<SideBarProps> = ({ className }) => {
   const { user } = useAuth();
 
   const topElements: Array<{
@@ -69,7 +73,9 @@ function SideBar() {
     },
   ];
   return (
-    <div className="flex flex-col justify-between p-2 pt-4 pb-4 border h-[90%]">
+    <div
+      className={`flex flex-col w-full justify-between p-2 py-4 h-full ${className}`}
+    >
       <section className="flex flex-col gap-2">
         {topElements.map(
           (element: {
@@ -106,6 +112,6 @@ function SideBar() {
       </section>
     </div>
   );
-}
+};
 
 export default SideBar;

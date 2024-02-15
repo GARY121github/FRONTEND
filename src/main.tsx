@@ -73,10 +73,6 @@ const router = createBrowserRouter([
           </AuthLayout>
         ),
       },
-      {
-        path: "/video/videoModal",
-        element: <VideoUploadModal />,
-      },
     ],
   },
 ]);
