@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -83,13 +83,15 @@ const EditTweet: React.FC<EditTweetProps> = ({
     }
   };
 
+  useEffect(() => {}, [setRerender]);
+
   return (
-    <Dialog>
+    <Dialog >
       <DialogTrigger className="flex w-full items-center justify-between">
         <h2>Edit</h2>
         <Pencil size={15} />
       </DialogTrigger>
-      <DialogContent className="bg-slate-400">
+      <DialogContent className="bg-slate-400 w-96 p-4 rounded-xl">
         <DialogHeader>
           <DialogTitle className="text-center">EDIT TWEET</DialogTitle>
           <DialogDescription>

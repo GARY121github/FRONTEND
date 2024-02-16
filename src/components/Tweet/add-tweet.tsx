@@ -41,7 +41,7 @@ const AddTweet: React.FC<AddTweetProps> = ({ setRerender }) => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-      setRerender(true);
+      setRerender(prev => !prev);
       toast({
         variant: "success",
         title: "Tweet added",

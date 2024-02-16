@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Trash2 } from "lucide-react";
 import {
   AlertDialog,
@@ -17,7 +17,7 @@ interface DeleteTweetProps {
   tweetId: string;
   setRerender: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const DeleteTweet: React.FC<DeleteTweetProps> = ({ tweetId , setRerender }) => {
+const DeleteTweet: React.FC<DeleteTweetProps> = ({ tweetId, setRerender }) => {
   const { toast } = useToast();
   const deleteTweet = async () => {
     try {
@@ -35,18 +35,19 @@ const DeleteTweet: React.FC<DeleteTweetProps> = ({ tweetId , setRerender }) => {
           Authorization: `Bearer ${storedAccessToken}`,
         },
       });
+      setRerender(true);
       toast({
         variant: "success",
         title: "Tweet deleted",
         description: "Tweet deleted successfully",
       });
-      setRerender(true);
     } catch (error) {
       console.log(error);
     }
   };
 
-  
+  useEffect(() => {}, [setRerender]);
+
   return (
     <AlertDialog>
       <AlertDialogTrigger className="flex w-full items-center justify-between">
