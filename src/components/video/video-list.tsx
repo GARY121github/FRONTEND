@@ -61,31 +61,36 @@ const VideoList: React.FC<videoProps> = ({ video }) => {
   };
 
   return (
-    <Card className="flex rounded-none cursor-pointer h-52">
-      <CardHeader className="basis-1/4 p-0 relative">
-        <img className="h-full w-full object-cover" src={video.thumbnail} />
-        <span className="absolute bottom-1 right-1 bg-black text-white p-1 rounded-sm">
+    <Card className="flex cursor-pointer bg-inherit border-none shadow-none min-w-md">
+      <CardHeader className="relative p-0 w-[164px] h-[96px] min-w-[168px] min-h-[94px]">
+        <img
+          className="object-cover h-full w-full rounded-lg"
+          src={video.thumbnail}
+          width={168}
+          height={94}
+        />
+        <span className="absolute bottom-1 right-1 bg-black text-white bg-opacity-80 p-0.5 rounded-md">
           {video.duration.substring(0, 5)}
         </span>
       </CardHeader>
-      <CardContent className="basis-3/4 flex flex-col gap-2 pb-0">
-        <h5 className="text-xl font-bold line-clamp-2">{video.title}</h5>
-        <p className="text-gray-500 text-lg">
+      <CardContent className="flex flex-col">
+        <h5 className="text-sm font-bold line-clamp-2">{video.title}</h5>
+        <p className="text-gray-500 text-xs">
           {video.views} views . {formatDate(video.createdAt)}
         </p>
-        <div className="flex justify-start items-center gap-2">
-          <Avatar className="">
+        <div className="flex justify-start items-center gap-1">
+          {/* <Avatar className="">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <h6 className="text-xl">{video.channel.name}</h6>
+          </Avatar> */}
+          <h6 className="text-xs">{video.channel.name}</h6>
         </div>
-        <p className="line-clamp-2">
-          {/* {video.description.length > 100
+        {/* <p className="line-clamp-2"> */}
+        {/* {video.description.length > 100
             ? video.description.substring(0, 100) + "..."
             : video.description} */}
-          {video.description}
-        </p>
+        {/* {video.description}
+        </p> */}
       </CardContent>
     </Card>
   );
