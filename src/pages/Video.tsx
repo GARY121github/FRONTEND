@@ -352,10 +352,10 @@ const Video = () => {
   return (
     <Layout>
       <div className="grid grid-cols-6 gap-2 p-2">
-        <div className="col-span-4">
+        <div className="col-span-6 lg:col-span-4">
           <VideoPlayer />
         </div>
-        <div className="flex flex-col gap-4 col-span-2">
+        <div className="flex flex-col gap-2 lg:col-span-2">
           {data.map((video: Video) => (
             <VideoList video={video} key={video.url} />
           ))}
