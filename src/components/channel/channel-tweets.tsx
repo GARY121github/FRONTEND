@@ -72,6 +72,7 @@ const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
   useEffect(() => {
     console.log("rerendering" , rerender);
     fetchTweets();
+    setRerender(false);
   }, [rerender , setRerender]);
 
   return (

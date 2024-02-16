@@ -15,13 +15,18 @@ import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 import Logout from "@/components/logout";
+import { cn } from "@/lib/utils";
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  className?: string;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {}, [user, isAuthenticated]);
   return (
-    <header className="sticky top-0 border-b-2 bg-white z-10">
+    <header className={cn("sticky top-0 border-b-2 bg-white z-10", className)}>
       <nav className="flex justify-between p-3">
         <section className="basis-[25%] w-full  flex justify-start items-center">
           <Button className="bg-inherit hover:bg-slate-200 shadow-none">
