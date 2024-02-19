@@ -10,13 +10,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Upload } from "lucide-react";
 
-const MAX_FILE_SIZE = 5000000; // 5MB
+const MAX_VIDEO_FILE_SIZE = 500000000; // 50MB
+const MAX_THUMBNAIL_FILE_SIZE = 5000000; // 5MB
+
 function checkVideoFileType(file: File) {
   if (file?.name) {
     const fileType = file.name.split(".").pop();
@@ -51,10 +54,10 @@ function checkImageFileType(file: File) {
 }
 
 const formSchema = z.object({
-  videoSelect: z
+  videoFile: z
     .any()
     .refine((file) => file?.length !== 0, "File is required")
-    .refine((file) => file.size < MAX_FILE_SIZE, "Max size is 5MB.")
+    .refine((file) => file.size < MAX_VIDEO_FILE_SIZE, "Max size is 50MB.")
     .refine(
       (file) => checkVideoFileType(file),
       "Only .mp4, .mov, .webm, .avi, .mkv, .flv, .wmv formats are supported."
@@ -62,7 +65,7 @@ const formSchema = z.object({
   thumbnail: z
     .any()
     .refine((file) => file?.length !== 0, "File is required")
-    .refine((file) => file.size < MAX_FILE_SIZE, "Max size is 5MB.")
+    .refine((file) => file.size < MAX_THUMBNAIL_FILE_SIZE, "Max size is 5MB.")
     .refine(
       (file) => checkImageFileType(file),
       "Only .jpg, .jpeg, .png, .gif formats are supported."
@@ -81,15 +84,36 @@ const VideoUploadForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      videoSelect: new File([], ""),
+      videoFile: new File([], ""),
       thumbnail: new File([], ""),
       title: "",
       description: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      console.log("video uploading started")
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/videos",
+        {
+          title: values.title,
+          description: values.description,
+          videoFile: values.videoFile,
+          thumbnail: values.thumbnail,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -100,11 +124,11 @@ const VideoUploadForm = () => {
       >
         <FormField
           control={form.control}
-          name="videoSelect"
+          name="videoFile"
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Upload Videos<sup>*</sup>
+                Upload Videos<sup className="text-red-400">*</sup>
               </FormLabel>
               <FormControl>
                 <div
@@ -120,7 +144,7 @@ const VideoUploadForm = () => {
                   onDrop={(e) => {
                     e.preventDefault();
                     dragActive &&
-                      form.setValue("videoSelect", e.dataTransfer.files[0]);
+                      form.setValue("videoFile", e.dataTransfer.files[0]);
                     setDragActive(false);
                   }}
                 >
@@ -135,7 +159,9 @@ const VideoUploadForm = () => {
                     <div className="h-10 w-[40%] relative mt-2">
                       <label htmlFor="videoUpload">
                         <p className="group/btn mr-1 w-full items-center gap-x-2 bg-[#ae7aff] hover:bg-[#9c60fe] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e]">
-                          Select Files
+                          {form.watch("videoFile")?.size === 0
+                            ? "SELECT VIDEO"
+                            : form.watch("videoFile").name}
                         </p>
                         <Input
                           id="videoUpload"
@@ -162,7 +188,7 @@ const VideoUploadForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Thumbnail<sup>*</sup>
+                Thumbnail<sup className="text-red-400">*</sup>
               </FormLabel>
               <FormControl>
                 <Input
@@ -183,7 +209,7 @@ const VideoUploadForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Title<sup>*</sup>
+                Title<sup className="text-red-400">*</sup>
               </FormLabel>
               <FormControl>
                 <Input
@@ -202,7 +228,7 @@ const VideoUploadForm = () => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>
-                Description<sup>*</sup>
+                Description<sup className="text-red-400">*</sup>
               </FormLabel>
               <FormControl>
                 <Textarea

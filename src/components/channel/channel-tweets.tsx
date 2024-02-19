@@ -58,8 +58,6 @@ const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
           },
         }
       );
-      console.log(response);
-      // Update state with fetched tweets
       setTweets(response.data.data);
       setLoading(false);
     } catch (error) {
@@ -70,7 +68,6 @@ const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
   };
 
   useEffect(() => {
-    console.log("rerendering" , rerender);
     fetchTweets();
     setRerender(false);
   }, [rerender , setRerender]);

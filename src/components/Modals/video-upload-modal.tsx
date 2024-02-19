@@ -19,7 +19,7 @@ const VideoUploadModal = () => {
           <p className="text-white">New video</p>
         </div>
       </DialogTrigger>
-      <DialogContent className="bg-gray-900 w-[65%] h-[95%] overflow-scroll py-4 max-w-full rounded-none px-0">
+      <DialogContent className="bg-gray-900 w-[65%] h-[95%] overflow-scroll overflow-x-hidden py-4 max-w-full rounded-none px-0">
         <DialogHeader className="min-w-full">
           <DialogTitle className="flex justify-between items-center p-2 px-4">
             <div className="text-white">Upload Videos</div>
