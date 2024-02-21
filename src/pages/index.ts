@@ -4,6 +4,7 @@ import Home from "./Home";
 import Video from "./Video";
 import Channel from "./Channel";
 import ChannelNotFound from "./ChannelNotFound";
+import Dashboard from "./Dashboard";
 
 export {
   Auth,
@@ -11,5 +12,6 @@ export {
   Home,
   Video,
   Channel,
-  ChannelNotFound
+  ChannelNotFound,
+  Dashboard,
 };

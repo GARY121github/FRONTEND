@@ -49,9 +49,12 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
                   </Avatar>
                 </MenubarTrigger>
                 <MenubarContent>
-                  <MenubarItem className="flex justify-between cursor-pointer">
-                    Profile <CircleUserRound />
-                  </MenubarItem>
+                  <Link to="/dashboard">
+                    <MenubarItem className="flex justify-between cursor-pointer">
+                      Profile <CircleUserRound />
+                    </MenubarItem>
+                  </Link>
+
                   <MenubarSeparator />
                   <MenubarItem>
                     <Logout />

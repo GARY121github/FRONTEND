@@ -14,6 +14,7 @@ import {
   Video,
   Channel,
   ChannelNotFound,
+  Dashboard,
 } from "@/pages/index";
 
 const router = createBrowserRouter([
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <Channel />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <AuthLayout authentication={true}>
+            <Dashboard />
           </AuthLayout>
         ),
       },

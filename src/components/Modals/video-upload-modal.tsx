@@ -14,7 +14,7 @@ const VideoUploadModal = () => {
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="flex items-center gap-2 justify-center bg-purple-500 p-3 rounded-lg hover:bg-purple-600">
+        <div className="flex items-center gap-2 justify-center bg-purple-500 p-2 rounded-lg hover:bg-purple-600">
           <Plus size={20} className="text-white" />
           <p className="text-white">New video</p>
         </div>
