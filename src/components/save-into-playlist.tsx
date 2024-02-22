@@ -8,13 +8,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "./ui/button";
 
 const SaveToPlaylist = () => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="bg-white gap-3 flex justify-around items-center p-2 pl-3 pr-3 border-none outline-none rounded-md cursor-pointer">
-        <FolderPlus />
-        <span className="text-sm">Save</span>
+      <DropdownMenuTrigger>
+        <Button className="gap-2 bg-white text-black hover:bg-slate-300 flex items-center">
+          <FolderPlus size={20} />
+          <span className="">save</span>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>

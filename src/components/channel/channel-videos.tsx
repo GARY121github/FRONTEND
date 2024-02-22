@@ -4,12 +4,29 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import Empty from "../empty";
 import { Play } from "lucide-react";
+import VideoCard from "@/components/video/video-card";
+import useAuth from "@/hooks/useAuth";
+
+interface videoOwner {
+  username: string;
+  fullName: string;
+  avatar: string;
+  _id: string;
+}
 
 interface Video {
-  // Define the structure of a video
-  id: string;
+  createdAt: string;
+  description: string;
+  duration: number;
+  isPublished: boolean;
+  owner: videoOwner;
+  thumbnail: string;
   title: string;
-  // Add more properties if available
+  updatedAt: string;
+  videoFile: string;
+  views: number;
+  __v: number;
+  _id: string;
 }
 
 interface ChannelVideosProps {
@@ -17,10 +34,11 @@ interface ChannelVideosProps {
 }
 
 const ChannelVideos: React.FC<ChannelVideosProps> = ({ channelName }) => {
-  const [videos, setVideos] = useState<Video[]>([]); // Specify the type for videos as an array of Video
+  const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const fetchVideos = async () => {
     try {
@@ -45,6 +63,7 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({ channelName }) => {
         }
       );
 
+      console.log(response);
       // Update state with fetched videos
       setVideos(response.data.data);
       setLoading(false);
@@ -58,15 +77,13 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({ channelName }) => {
   useEffect(() => {
     fetchVideos();
     console.log("Videos fetched");
-  }, []);
+  }, [channelName]);
 
   return (
-    <>
+    <div>
       {loading ? (
         <h1>Loading...</h1>
       ) : videos.length === 0 ? (
-        // TODO: Add a message to show when there are no videos
-        // Check if there are no videos
         <Empty
           className=""
           icon={<Play className="bg-sky-700 pl-3 p-2 rounded-full" size={50} />}
@@ -76,12 +93,25 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({ channelName }) => {
           }
         />
       ) : (
-        <>
-          <h1>Videos Page</h1>
-          {/* Render videos here */}
-        </>
+        <div className="grid grid-cols-3 gap-4 p-4">
+          {user &&
+            videos.map((video) => (
+              <VideoCard
+                key={video._id}
+                title={video.title}
+                createdAt={video.createdAt}
+                description={video.description}
+                duration={video.duration}
+                owner={video.owner}
+                thumbnail={video.thumbnail}
+                videoFile={video.videoFile}
+                views={video.views}
+                _id={video._id}
+              />
+            ))}
+        </div>
       )}
-    </>
+    </div>
   );
 };
 
