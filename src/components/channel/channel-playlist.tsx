@@ -8,7 +8,7 @@ import { Folder } from "lucide-react";
 interface Playlist {
   id: string;
   title: string;
-  // Add more properties if available
+  
 }
 
 interface ChannelPlaylistProps {

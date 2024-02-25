@@ -1,6 +1,12 @@
 import React from "react";
 import ChannelAvatar from "@/components/Channel/channel-avatar";
 import { Link } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface videoOwner {
   username: string;
@@ -64,15 +70,47 @@ const VideoCard: React.FC<VideoCardProps> = ({
         </Link>
       </div>
       <div className="flex gap-2 p-1">
-        <ChannelAvatar avatar={owner?.avatar} />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className="p-0">
+              <Link to={`/@${owner?.username}`}>
+                <ChannelAvatar avatar={owner?.avatar} />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent className="bg-black border-none text-white">
+              <span>{owner?.username}</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
         <div className="flex flex-col justify-around">
-          <h3 className="text-white text-xl font-semibold line-clamp-2">
-            {title}
-          </h3>
+          <Link
+            to={`/video/${_id}`}
+            state={{
+              video: {
+                videoFile,
+                views,
+                title,
+                duration,
+                createdAt,
+                description,
+                owner,
+                _id,
+              },
+            }}
+          >
+            <h3 className="text-white text-xl font-semibold line-clamp-2">
+              {title}
+            </h3>
+          </Link>
+          <Link to={`/@${owner?.username}`}>
+            <p className="text-slate-200 hover:text-slate-400">
+              {owner?.fullName}
+            </p>
+          </Link>
           <p className="text-white text-sm">
             {views} views | {timeDifference}
           </p>
-          <p className="text-slate-300">{owner?.username}</p>
         </div>
       </div>
     </div>

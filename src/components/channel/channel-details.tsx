@@ -4,6 +4,7 @@ import ChannelAvatar from "@/components/Channel/channel-avatar";
 import { Button } from "@/components/ui/button";
 import { BellPlus, BellMinus } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 
 interface props {
   channelName: string;
@@ -47,8 +48,6 @@ const ChannelDetails: React.FC<props> = ({ channelName }) => {
 
   const toggelSubscription = async () => {
     const storedAccessToken = localStorage.getItem("accessToken");
-    console.log(localStorage);
-    console.log("access Token", storedAccessToken);
     if (!storedAccessToken) {
       console.log("YOU NEED TO LOGIN FIRST");
       return;
@@ -77,15 +76,17 @@ const ChannelDetails: React.FC<props> = ({ channelName }) => {
   return (
     <div className="flex justify-between items-center w-full border-b-2 pb-4">
       {channel && (
-        <section className="flex justify-around gap-2 items-center">
-          <ChannelAvatar avatar={channel.avatar} />
-          <div className="flex flex-col justify-between items-start">
-            <h3 className="md text-white">{channel?.username}</h3>
-            <p className="text-slate-400">
-              {channel?.subscribersCount} Subscribers
-            </p>
-          </div>
-        </section>
+        <Link to={`/@${channel.username}`} className="flex gap-1 items-center">
+          <section className="flex justify-around gap-2 items-center">
+            <ChannelAvatar avatar={channel.avatar} />
+            <div className="flex flex-col justify-between items-start">
+              <h3 className="md text-white">{channel?.username}</h3>
+              <p className="text-slate-400">
+                {channel?.subscribersCount} Subscribers
+              </p>
+            </div>
+          </section>
+        </Link>
       )}
       {user && user.username !== channelName ? (
         <section onClick={toggelSubscription}>
