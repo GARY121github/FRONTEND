@@ -41,10 +41,6 @@ const ChannelDetails: React.FC<props> = ({ channelName }) => {
         },
       }
     );
-    console.log(response);
-    console.log(user?.username);
-    console.log(channelName);
-    console.log(user?.username === channelName);
     setChannel(response.data.data);
     return response.data.data.isSubscribed;
   };

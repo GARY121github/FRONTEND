@@ -10,30 +10,28 @@ import {
 } from "@/components/ui/card";
 import Video from "@/components/video";
 import Like from "../like";
-import SaveIntoPlaylist from "@/components/save-into-playlist";
+import SaveIntoPlaylist from "@/components/Playlist/save-into-playlist";
 import ChannelDetails from "@/components/Channel/channel-details";
 import axios from "axios";
+import useAuth from "@/hooks/useAuth";
 
 const VideoDetails = () => {
   const { video } = useLocation().state;
   const [timeDifference, setTimeDifference] = useState<string>("");
+  const { user } = useAuth();
 
   const increaseViewCount = async () => {
     try {
-      console.log(video);
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/videos/${video._id}/view`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      console.log(response);
+      await axios.get(`http://localhost:8000/api/v1/videos/${video._id}/view`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     increaseViewCount();
     setTimeDifference(calculateTimeDifference(new Date(video.createdAt)));
@@ -48,14 +46,18 @@ const VideoDetails = () => {
         <Card className="bg-slate-800 border-black">
           <CardHeader className="flex flex-row justify-between items-center">
             <div>
-              <CardTitle className="text-2xl text-white font-bold">{video.title.toUpperCase()}</CardTitle>
+              <CardTitle className="text-2xl text-white font-bold">
+                {video.title.toUpperCase()}
+              </CardTitle>
               <CardDescription className="text-white text-sm">
                 {video.views} views | {timeDifference}
               </CardDescription>
             </div>
             <div className="flex justify-around gap-1">
-              <Like like={200} />
-              <SaveIntoPlaylist />
+              <Like likeOf="video" id={video._id} />
+              {user && video.owner._id === user._id && (
+                <SaveIntoPlaylist videoId={video._id} />
+              )}
             </div>
           </CardHeader>
           <CardContent className="flex justify-between items-center">

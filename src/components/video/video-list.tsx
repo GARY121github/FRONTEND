@@ -5,8 +5,6 @@ import {
   CardHeader
 } from "@/components/ui/card";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 interface VideoType {
   id: number;
   title: string;
