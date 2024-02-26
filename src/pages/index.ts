@@ -5,6 +5,7 @@ import Video from "./Video";
 import Channel from "./Channel";
 import ChannelNotFound from "./ChannelNotFound";
 import Dashboard from "./Dashboard";
+import Search from "./Search";
 
 export {
   Auth,
@@ -14,4 +15,5 @@ export {
   Channel,
   ChannelNotFound,
   Dashboard,
+  Search,
 };

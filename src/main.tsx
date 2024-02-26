@@ -15,6 +15,7 @@ import {
   Channel,
   ChannelNotFound,
   Dashboard,
+  Search,
 } from "@/pages/index";
 
 const router = createBrowserRouter([
@@ -59,6 +60,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/v/:search",
+        element: (
+          <AuthLayout authentication={true}>
+            <Search />
+          </AuthLayout>
+        ),
+      },
+      {
         path: "/:channelName",
         element: (
           <AuthLayout authentication={true}>
@@ -87,10 +96,8 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-      <Toaster />
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <RouterProvider router={router} />
+    <Toaster />
+  </Provider>
 );

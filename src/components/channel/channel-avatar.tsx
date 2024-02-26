@@ -8,11 +8,11 @@ interface ChannelAvatarProps {
 
 const ChannelAvatar: React.FC<ChannelAvatarProps> = ({
   avatar,
-  className = "",
+  className
 }) => {
   // Provide default value for className
   return (
-    <Avatar className={className}>
+    <Avatar className={`cursor-pointer ${className}`}>
       <AvatarImage src={avatar} />
       <AvatarFallback>CN</AvatarFallback>
     </Avatar>

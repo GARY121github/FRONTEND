@@ -1,360 +1,81 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "@/components/Layout/pages-layout";
+import axios from "axios";
 import VideoCard from "@/components/video/video-card";
 
+interface VideoOwner {
+  username: string;
+  fullName: string;
+  avatar: string;
+  _id: string;
+}
+
 interface Video {
-  id: number;
-  title: string;
-  description: string;
-  url: string;
-  thumbnail: string;
-  duration: string;
-  views: number;
-  likes: number;
-  dislikes: number;
-  comments: number;
   createdAt: string;
+  description: string;
+  duration: number;
+  isPublished: boolean;
+  owner: VideoOwner;
+  thumbnail: string;
+  title: string;
   updatedAt: string;
-  channel: {
-    id: number;
-    name: string;
-    description: string;
-    thumbnail: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-  category: {
-    id: number;
-    name: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-  user: {
-    id: number;
-    name: string;
-    email: string;
-    avatar: string;
-  };
+  videoFile: string;
+  views: number;
+  __v: number;
+  _id: string;
 }
 
 const Home = () => {
-  const data: Array<Video> = [
-    {
-      id: 1,
-      title: "Video Title",
-      description: "Video Description",
-      url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
-      thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-      duration: "00:00:00",
-      views: 0,
-      likes: 0,
-      dislikes: 0,
-      comments: 0,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
-      channel: {
-        id: 1,
-        name: "Channel Name",
-        description: "Channel Description",
-        thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      category: {
-        id: 1,
-        name: "Category Name",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      user: {
-        id: 1,
-        name: "Gary Stark",
-        email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
-      },
-    },
-    {
-      id: 1,
-      title: "Video Title",
-      description: "Video Description",
-      url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
-      thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-      duration: "00:00:00",
-      views: 0,
-      likes: 0,
-      dislikes: 0,
-      comments: 0,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
-      channel: {
-        id: 1,
-        name: "Channel Name",
-        description: "Channel Description",
-        thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      category: {
-        id: 1,
-        name: "Category Name",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      user: {
-        id: 1,
-        name: "Gary Stark",
-        email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
-      },
-    },
-    {
-      id: 1,
-      title: "Video Title",
-      description: "Video Description",
-      url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
-      thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-      duration: "00:00:00",
-      views: 0,
-      likes: 0,
-      dislikes: 0,
-      comments: 0,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
-      channel: {
-        id: 1,
-        name: "Channel Name",
-        description: "Channel Description",
-        thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      category: {
-        id: 1,
-        name: "Category Name",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      user: {
-        id: 1,
-        name: "Gary Stark",
-        email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
-      },
-    },
-    {
-      id: 1,
-      title: "Video Title",
-      description: "Video Description",
-      url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
-      thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-      duration: "00:00:00",
-      views: 0,
-      likes: 0,
-      dislikes: 0,
-      comments: 0,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
-      channel: {
-        id: 1,
-        name: "Channel Name",
-        description: "Channel Description",
-        thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      category: {
-        id: 1,
-        name: "Category Name",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      user: {
-        id: 1,
-        name: "Gary Stark",
-        email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
-      },
-    },
-    {
-      id: 1,
-      title: "Video Title",
-      description: "Video Description",
-      url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
-      thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-      duration: "00:00:00",
-      views: 0,
-      likes: 0,
-      dislikes: 0,
-      comments: 0,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
-      channel: {
-        id: 1,
-        name: "Channel Name",
-        description: "Channel Description",
-        thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      category: {
-        id: 1,
-        name: "Category Name",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      user: {
-        id: 1,
-        name: "Gary Stark",
-        email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
-      },
-    },
-    {
-      id: 1,
-      title: "Video Title",
-      description: "Video Description",
-      url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
-      thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-      duration: "00:00:00",
-      views: 0,
-      likes: 0,
-      dislikes: 0,
-      comments: 0,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
-      channel: {
-        id: 1,
-        name: "Channel Name",
-        description: "Channel Description",
-        thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      category: {
-        id: 1,
-        name: "Category Name",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      user: {
-        id: 1,
-        name: "Gary Stark",
-        email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
-      },
-    },
-    {
-      id: 1,
-      title: "Video Title",
-      description: "Video Description",
-      url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
-      thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-      duration: "00:00:00",
-      views: 0,
-      likes: 0,
-      dislikes: 0,
-      comments: 0,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
-      channel: {
-        id: 1,
-        name: "Channel Name",
-        description: "Channel Description",
-        thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      category: {
-        id: 1,
-        name: "Category Name",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      user: {
-        id: 1,
-        name: "Gary Stark",
-        email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
-      },
-    },
-    {
-      id: 1,
-      title: "Video Title",
-      description: "Video Description",
-      url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
-      thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-      duration: "00:00:00",
-      views: 0,
-      likes: 0,
-      dislikes: 0,
-      comments: 0,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
-      channel: {
-        id: 1,
-        name: "Channel Name",
-        description: "Channel Description",
-        thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      category: {
-        id: 1,
-        name: "Category Name",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      user: {
-        id: 1,
-        name: "Gary Stark",
-        email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
-      },
-    },
-    {
-      id: 1,
-      title: "Video Title",
-      description: "Video Description",
-      url: "https://www.youtube.com/watch?v=V9XeyBd_IuA",
-      thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-      duration: "00:00:00",
-      views: 0,
-      likes: 0,
-      dislikes: 0,
-      comments: 0,
-      createdAt: "2021-01-01T00:00:00.000Z",
-      updatedAt: "2021-01-01T00:00:00.000Z",
-      channel: {
-        id: 1,
-        name: "Channel Name",
-        description: "Channel Description",
-        thumbnail: "https://i.ytimg.com/vi/V9XeyBd_IuA/maxresdefault.jpg",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      category: {
-        id: 1,
-        name: "Category Name",
-        createdAt: "2021-01-01T00:00:00.000Z",
-        updatedAt: "2021-01-01T00:00:00.000Z",
-      },
-      user: {
-        id: 1,
-        name: "Gary Stark",
-        email: "harshprakash@gmail.com",
-        avatar: "https://github.com/shadcn.png"
-      },
-    },
-    
-  ];
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchVideos = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/api/v1/videos", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setVideos(response.data.data.videos);
+    } catch (error) {
+      setError("Error fetching videos");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVideos();
+  }, []);
 
   return (
     <Layout>
-      <div className="grid grid-cols-3 gap-4 p-3">
-        {data.map((video: Video) => (
-          <VideoCard key={video.id} video={video} />
-        ))}
-      </div>
+      {loading && <p>Loading...</p>}
+      {error && <p>{error}</p>}
+      {!loading && !error && Array.isArray(videos) && videos.length > 0 && (
+        <div className="grid grid-cols-3 gap-4 p-4">
+          {videos.map((video) => (
+            <VideoCard
+              key={video._id}
+              title={video.title}
+              createdAt={video.createdAt}
+              description={video.description}
+              duration={video.duration}
+              owner={video.owner}
+              thumbnail={video.thumbnail}
+              videoFile={video.videoFile}
+              views={video.views}
+              _id={video._id}
+            />
+          ))}
+        </div>
+      )}
+      {!loading &&
+        !error &&
+        (!Array.isArray(videos) || videos.length === 0) && (
+          <p>No videos found.</p>
+        )}
     </Layout>
   );
 };
