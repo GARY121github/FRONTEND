@@ -1,4 +1,3 @@
-import React from "react";
 import ChannelComponent from "@/components/Channel/channel";
 import Layout from "@/components/Layout/pages-layout";
 

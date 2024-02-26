@@ -28,6 +28,7 @@ interface VideoListProps {
   views: number;
   __v: number;
   _id: string;
+  className?: string;
 }
 
 const VideoList: React.FC<VideoListProps> = ({
@@ -40,6 +41,7 @@ const VideoList: React.FC<VideoListProps> = ({
   videoFile,
   views,
   _id,
+  className = "",
 }) => {
   const formattedDuration = secondsToTime(duration);
   const timeDifference = calculateTimeDifference(new Date(createdAt));
@@ -59,7 +61,7 @@ const VideoList: React.FC<VideoListProps> = ({
         },
       }}
     >
-      <div className="grid grid-cols-3 gap-4 p-1">
+      <div className={`grid grid-cols-3 gap-4 p-1 ${className}`}>
         <div className="col-span-1 relative">
           <img
             className="rounded-xl object-cover h-60 w-full"

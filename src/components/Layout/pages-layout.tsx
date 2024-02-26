@@ -17,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children, className }) => {
           <Sidebar className="hidden lg:flex" />
         </section>
         <section
-          className={`bg-slate-600 overflow-y-auto lg:basis-[85%] ${className}`}
+          className={`bg-slate-500 overflow-y-auto lg:basis-[85%] ${className}`}
         >
           {children}
         </section>
