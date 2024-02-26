@@ -78,7 +78,13 @@ const formSchema = z.object({
   }),
 });
 
-const VideoUploadForm = () => {
+interface VideoUploadFormProps {
+  setStartUpload: (value: boolean) => void;
+}
+
+const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
+  setStartUpload,
+}) => {
   const [dragActive, setDragActive] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -93,7 +99,8 @@ const VideoUploadForm = () => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      console.log("video uploading started")
+      console.log("video uploading started");
+      setStartUpload(true);
       const response = await axios.post(
         "http://localhost:8000/api/v1/videos",
         {
