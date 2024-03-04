@@ -18,7 +18,7 @@ import { z } from "zod";
 import { Upload } from "lucide-react";
 
 const MAX_VIDEO_FILE_SIZE = 500000000; // 50MB
-const MAX_THUMBNAIL_FILE_SIZE = 5000000; // 5MB
+const MAX_THUMBNAIL_FILE_SIZE = 500000000; // 5MB
 
 function checkVideoFileType(file: File) {
   if (file?.name) {

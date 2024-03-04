@@ -3,6 +3,7 @@ import Layout from "@/components/Layout/pages-layout";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import VideoList from "@/components/video/video-list";
+import ChannelList from "@/components/Channel/channel-list";
 
 interface videoOwner {
   username: string;
@@ -26,10 +27,38 @@ interface Video {
   _id: string;
 }
 
+interface ChannelDetails {
+  _id: string;
+  username: string;
+  fullName: string;
+  avatar: string;
+  coverImage: string;
+  subscribersCount: number;
+  channelsSubscriberToCount: number;
+  isSubscribed: boolean;
+}
+
 const Search = () => {
   const { search } = useParams();
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(false);
+  const [channel, setChannel] = useState<ChannelDetails | null>(null);
+
+  const searchChannel = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/v1/users/c/${search}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      setChannel(response.data.data);
+    } catch (error) {
+      setChannel(null);
+    }
+  };
 
   const searchVideos = async () => {
     try {
@@ -50,6 +79,7 @@ const Search = () => {
   };
 
   useEffect(() => {
+    searchChannel();
     searchVideos();
   }, [search]);
 
@@ -59,8 +89,20 @@ const Search = () => {
         <h1>Loading....</h1>
       ) : (
         <div className="flex flex-col gap-1 p-4">
+          {channel && (
+            <div className="p-4 border-b-2 border-white">
+              <ChannelList
+                avatar={channel.avatar}
+                fullName={channel.fullName}
+                subscribersCount={channel.subscribersCount}
+                username={channel.username}
+              />
+            </div>
+          )}
           {videos.length === 0 ? (
-            <h1 className="text-2xl text-white">No videos available.</h1>
+            <div className="flex justify-center items-center h-screen">
+              <h1 className="text-3xl text-white font-bold">No Videos Found</h1>
+            </div>
           ) : (
             videos.map((video) => (
               <VideoList

@@ -16,6 +16,7 @@ import {
   ChannelNotFound,
   Dashboard,
   Search,
+  Playlist,
 } from "@/pages/index";
 
 const router = createBrowserRouter([
@@ -72,6 +73,14 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <Channel />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/:channelName/playlist/:playlist",
+        element: (
+          <AuthLayout authentication={true}>
+            <Playlist />
           </AuthLayout>
         ),
       },

@@ -6,6 +6,7 @@ import Channel from "./Channel";
 import ChannelNotFound from "./ChannelNotFound";
 import Dashboard from "./Dashboard";
 import Search from "./Search";
+import Playlist from "./Playlist";
 
 export {
   Auth,
@@ -16,4 +17,5 @@ export {
   ChannelNotFound,
   Dashboard,
   Search,
+  Playlist
 };
