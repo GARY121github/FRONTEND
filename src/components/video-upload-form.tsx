@@ -80,10 +80,12 @@ const formSchema = z.object({
 
 interface VideoUploadFormProps {
   setStartUpload: (value: boolean) => void;
+  setIsOpen: (value: boolean) => void;
 }
 
 const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
   setStartUpload,
+  setIsOpen,
 }) => {
   const [dragActive, setDragActive] = useState(false);
 
@@ -116,9 +118,11 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
           },
         }
       );
-
+      setStartUpload(false);
+      setIsOpen(false);
       console.log(response);
     } catch (error) {
+      setStartUpload(false);
       console.error(error);
     }
   }

@@ -10,17 +10,24 @@ import {
 import VideoUploadForm from "../video-upload-form";
 import { Plus } from "lucide-react";
 import VideoUploadProgress from "../video-upload-progress";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const VideoUploadModal = () => {
   const [startUplaod, setStartUpload] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    // Any side effects can be placed here
+  }, [isOpen]);
 
   return (
-    <Dialog>
+    <Dialog open={isOpen}>
       <DialogTrigger>
         <div className="flex items-center gap-2 justify-center bg-purple-500 p-2 rounded-lg hover:bg-purple-600">
           <Plus size={20} className="text-white" />
-          <p className="text-white">New video</p>
+          <p className="text-white" onClick={() => setIsOpen(true)}>
+            New video
+          </p>
         </div>
       </DialogTrigger>
       {startUplaod ? (
@@ -54,7 +61,10 @@ const VideoUploadModal = () => {
           </DialogHeader>
           <hr />
           <DialogDescription className="px-20">
-            <VideoUploadForm setStartUpload={setStartUpload} />
+            <VideoUploadForm
+              setStartUpload={setStartUpload}
+              setIsOpen={setIsOpen}
+            />
           </DialogDescription>
         </DialogContent>
       )}
