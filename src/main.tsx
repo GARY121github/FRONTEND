@@ -17,6 +17,7 @@ import {
   Dashboard,
   Search,
   Playlist,
+  LikedVideos,
 } from "@/pages/index";
 
 const router = createBrowserRouter([
@@ -49,6 +50,14 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <History />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/liked-videos",
+        element: (
+          <AuthLayout authentication={true}>
+            <LikedVideos />
           </AuthLayout>
         ),
       },
