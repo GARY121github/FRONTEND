@@ -1,5 +1,5 @@
 import Auth from "./Auth";
-import History from "./History";
+import WatchHistory from "./WatchHistory";
 import Home from "./Home";
 import Video from "./Video";
 import Channel from "./Channel";
@@ -11,7 +11,7 @@ import LikedVideos from "./LikedVideos";
 
 export {
   Auth,
-  History,
+  WatchHistory,
   Home,
   Video,
   Channel,

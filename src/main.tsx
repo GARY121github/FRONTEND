@@ -10,7 +10,7 @@ import AuthLayout from "@/components/Layout/auth-layout";
 import {
   Home,
   Auth,
-  History,
+  WatchHistory,
   Video,
   Channel,
   ChannelNotFound,
@@ -49,7 +49,7 @@ const router = createBrowserRouter([
         path: "/history",
         element: (
           <AuthLayout authentication={true}>
-            <History />
+            <WatchHistory />
           </AuthLayout>
         ),
       },

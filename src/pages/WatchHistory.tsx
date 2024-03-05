@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout/pages-layout";
 import axios from "axios";
 import VideoList from "@/components/video/video-list";
-
 interface videoOwner {
   username: string;
   fullName: string;
@@ -25,7 +24,7 @@ interface Video {
   _id: string;
 }
 
-const LikedVideos = () => {
+const WatchHistory = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -33,7 +32,7 @@ const LikedVideos = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:8000/api/v1/likes/videos",
+        "http://localhost:8000/api/v1/users/history",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -54,7 +53,7 @@ const LikedVideos = () => {
   return (
     <Layout>
       {loading ? (
-        <h1>Loading....</h1>
+        <h1>Loading</h1>
       ) : (
         <div className="flex flex-col gap-1 p-4">
           {videos.length === 0 ? (
@@ -88,4 +87,4 @@ const LikedVideos = () => {
   );
 };
 
-export default LikedVideos;
+export default WatchHistory;
