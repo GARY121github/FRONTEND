@@ -16,6 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Upload } from "lucide-react";
+import { useToast } from "./ui/use-toast";
 
 const MAX_VIDEO_FILE_SIZE = 500000000; // 50MB
 const MAX_THUMBNAIL_FILE_SIZE = 500000000; // 5MB
@@ -92,6 +93,7 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
   setIsOpen,
 }) => {
   const [dragActive, setDragActive] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -126,9 +128,19 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
       setRefreshList && setRefreshList(true);
       setStartUpload(false);
       setIsOpen(false);
+      toast({
+        title: "Video Uploaded",
+        description: "Video Uploaded Successfully!",
+        variant: "success",
+      });
       console.log(response);
     } catch (error) {
       setStartUpload(false);
+      toast({
+        title: "Upload Failed",
+        description: "Video Uploading Failed!",
+        variant: "destructive",
+      });
       console.error(error);
     }
   }

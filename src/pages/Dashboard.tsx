@@ -6,6 +6,7 @@ import VideoUploadModal from "@/components/Modals/video-upload-modal";
 import DashBoardCard from "@/components/Dashboard/dashboard-card";
 import { Eye, UserRound, Heart } from "lucide-react";
 import DashBoardVideoStats from "@/components/Dashboard/dashboard-video-stats";
+import Loading from "@/components/loading";
 
 interface Stats {
   totalLikes: number;
@@ -56,7 +57,7 @@ const Dashboard: React.FC = () => {
           <VideoUploadModal setRefreshList={setRefreshList} />
         </div>
         {loading ? (
-          <p>Loading...</p>
+          <Loading />
         ) : (
           <div>
             {stats && (

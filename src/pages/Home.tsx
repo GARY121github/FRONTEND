@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Layout from "@/components/Layout/pages-layout";
 import axios from "axios";
 import VideoCard from "@/components/video/video-card";
+import Loading from "@/components/loading";
 
 // Import loading spinner animation CSS
 import "./loading-spinner.css";
@@ -88,36 +89,31 @@ const Home = () => {
 
   return (
     <Layout>
-      <div className="grid grid-cols-3 gap-4 p-4">
-        {videos.map((video, index) => (
-          <VideoCard
-            key={video._id}
-            title={video.title}
-            createdAt={video.createdAt}
-            description={video.description}
-            duration={video.duration}
-            owner={video.owner}
-            thumbnail={video.thumbnail}
-            videoFile={video.videoFile}
-            views={video.views}
-            _id={video._id}
-            ref={videos.length === index + 1 ? lastVideoRef : null}
-          />
-        ))}
-      </div>
-      
-      {!hasMore && (
-        <div className="flex justify-center items-center h-20">
-          <h1 className="text-3xl font-semibold">No more videos to load</h1>
-        </div>
-      )}
-
-      {loading && (
-        <div className="loading-spinner-container">
-          <div className="loading-spinner"></div>
-        </div>
-      )}
+      {loading && <Loading className="" />}
       {error && <p>{error}</p>}
+      {!loading && !error && Array.isArray(videos) && videos.length > 0 && (
+        <div className="grid grid-cols-3 gap-4 p-4">
+          {videos.map((video) => (
+            <VideoCard
+              key={video._id}
+              title={video.title}
+              createdAt={video.createdAt}
+              description={video.description}
+              duration={video.duration}
+              owner={video.owner}
+              thumbnail={video.thumbnail}
+              videoFile={video.videoFile}
+              views={video.views}
+              _id={video._id}
+            />
+          ))}
+        </div>
+      )}
+      {!loading &&
+        !error &&
+        (!Array.isArray(videos) || videos.length === 0) && (
+          <p>No videos found.</p>
+        )}
     </Layout>
   );
 };

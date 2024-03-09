@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import Empty from "../empty";
 import { Ghost } from "lucide-react";
+import Loading from "../loading";
 
 interface SubscribedChannel {
   _id: string;
@@ -114,18 +115,14 @@ const SubscribedChannels: React.FC<SubscribedChannelsProps> = ({
     <>
       {loading ? (
         // Render loading state if data is being fetched
-        <div>Loading...</div>
+        <Loading />
       ) : channels.length === 0 ? (
         // Render message when no subscribed channels available
         <Empty
           className="w-full my-auto min-h-96"
-          icon={
-            <Ghost className="bg-sky-700  p-2 rounded-full" size={50} />
-          }
+          icon={<Ghost className="bg-sky-700  p-2 rounded-full" size={50} />}
           title={"No subscribed channels available"}
-          description={
-            "You have not subscribed to any channels yet."
-          }
+          description={"You have not subscribed to any channels yet."}
         />
       ) : (
         <div className="p-2 ">
