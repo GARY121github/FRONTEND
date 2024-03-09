@@ -13,6 +13,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import Empty from "../empty";
+import { Ghost } from "lucide-react";
 
 interface SubscribedChannel {
   _id: string;
@@ -103,6 +105,7 @@ const SubscribedChannels: React.FC<SubscribedChannelsProps> = ({
     },
     [toast, navigate]
   );
+
   useEffect(() => {
     fetchSubscribedChannels();
   }, [channelId]); // Trigger the effect when channelId changes
@@ -114,7 +117,16 @@ const SubscribedChannels: React.FC<SubscribedChannelsProps> = ({
         <div>Loading...</div>
       ) : channels.length === 0 ? (
         // Render message when no subscribed channels available
-        <div>No Subscribed Channels Available</div>
+        <Empty
+          className="w-full my-auto min-h-96"
+          icon={
+            <Ghost className="bg-sky-700  p-2 rounded-full" size={50} />
+          }
+          title={"No subscribed channels available"}
+          description={
+            "You have not subscribed to any channels yet."
+          }
+        />
       ) : (
         <div className="p-2 ">
           <ul className="flex flex-col gap-2">

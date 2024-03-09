@@ -63,8 +63,6 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({ channelName }) => {
         }
       );
 
-      console.log(response);
-      // Update state with fetched videos
       setVideos(response.data.data);
       setLoading(false);
     } catch (error) {

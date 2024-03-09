@@ -35,6 +35,7 @@ const Channel = () => {
   const { user } = useAuth();
   const [channel, setChannel] = useState<ChannelDetails | null>(null);
   const [reloadChannel, setReloadChannel] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [component, setComponent] = useState<ReactNode>();
 
@@ -52,6 +53,7 @@ const Channel = () => {
           return;
         }
 
+        setLoading(true);
         const response = await axios.get(
           `http://localhost:8000/api/v1/users/c/${channelName?.substring(1)}`,
           {
@@ -61,8 +63,8 @@ const Channel = () => {
           }
         );
         const channelData = response.data.data;
-
         setChannel(channelData);
+        setLoading(false);
       } catch (error) {
         toast({
           variant: "destructive",
@@ -150,68 +152,74 @@ const Channel = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <section>
-        {channel && (
-          <div className="relative">
-            <ChannelCoverImage coverImage={channel.coverImage} />
-            <ChannelAvatar
-              avatar={channel.avatar}
-              className="h-36 w-36 absolute -bottom-14 left-4"
-            />
-          </div>
-        )}
-      </section>
-      <section>
-        {channel && (
-          <div className="ml-[10rem] -mt-2 p-2 flex justify-between items-center">
-            <div>
-              <h2 className="text-white text-2xl">@{channel.username}</h2>
-              <h3 className="text-white text-xl">
-                {channel.fullName.toLowerCase()} |{" "}
-                <span className="text-lg text-slate-200">
-                  {channel.subscribersCount} subscribers
-                </span>
-              </h3>
-            </div>
-            {user?.username !== channelName?.substring(1) ? (
-              <Button
-                className={`${
-                  channel.isSubscribed
-                    ? "bg-gray-500 hover:bg-gray-600"
-                    : "bg-red-500 hover:bg-red-600"
-                }`}
-                onClick={toggelSubscription}
-              >
-                {channel.isSubscribed ? "Subscribed" : "Subscribe"}
-              </Button>
-            ) : (
-              <UploadVideo />
-            )}
-          </div>
-        )}
-      </section>
-      <section className="p-2">
-        {channel && (
-          <div className="flex mt-2 items-center justify-between border-b-2">
-            {channelItems.map((item, index) => (
-              <div
-                className={`p-2 text-xl cursor-pointer hover:bg-white hover:text-black transition-all duration-300 ease-in-out w-full text-center ${
-                  component === channelItems[index].component
-                    ? "bg-white text-black"
-                    : "text-white"
-                }`}
-                key={index}
-                onClick={() => handleItemClick(index)}
-              >
-                {item.name}
+    <>
+      {loading ? (
+        <h1>Loading</h1>
+      ) : (
+        <div className="flex flex-col gap-2">
+          <section>
+            {channel && (
+              <div className="relative">
+                <ChannelCoverImage coverImage={channel.coverImage} />
+                <ChannelAvatar
+                  avatar={channel.avatar}
+                  className="h-36 w-36 absolute -bottom-14 left-4"
+                />
               </div>
-            ))}
-          </div>
-        )}
-      </section>
-      <section>{component}</section>
-    </div>
+            )}
+          </section>
+          <section>
+            {channel && (
+              <div className="ml-[10rem] -mt-2 p-2 flex justify-between items-center">
+                <div>
+                  <h2 className="text-white text-2xl">@{channel.username}</h2>
+                  <h3 className="text-white text-xl">
+                    {channel.fullName.toLowerCase()} |{" "}
+                    <span className="text-lg text-slate-200">
+                      {channel.subscribersCount} subscribers
+                    </span>
+                  </h3>
+                </div>
+                {user?.username !== channelName?.substring(1) ? (
+                  <Button
+                    className={`${
+                      channel.isSubscribed
+                        ? "bg-gray-500 hover:bg-gray-600"
+                        : "bg-red-500 hover:bg-red-600"
+                    }`}
+                    onClick={toggelSubscription}
+                  >
+                    {channel.isSubscribed ? "Subscribed" : "Subscribe"}
+                  </Button>
+                ) : (
+                  <UploadVideo />
+                )}
+              </div>
+            )}
+          </section>
+          <section className="p-2">
+            {channel && (
+              <div className="flex mt-2 items-center justify-between border-b-2">
+                {channelItems.map((item, index) => (
+                  <div
+                    className={`p-2 text-xl cursor-pointer hover:bg-white hover:text-black transition-all duration-300 ease-in-out w-full text-center ${
+                      component === channelItems[index].component
+                        ? "bg-white text-black"
+                        : "text-white"
+                    }`}
+                    key={index}
+                    onClick={() => handleItemClick(index)}
+                  >
+                    {item.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+          <section>{component}</section>
+        </div>
+      )}
+    </>
   );
 };
 

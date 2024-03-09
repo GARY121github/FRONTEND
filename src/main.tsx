@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
@@ -10,13 +9,15 @@ import AuthLayout from "@/components/Layout/auth-layout";
 import {
   Home,
   Auth,
-  History,
+  WatchHistory,
   Video,
   Channel,
   ChannelNotFound,
   Dashboard,
   Search,
   Playlist,
+  LikedVideos,
+  Subscribers,
 } from "@/pages/index";
 
 const router = createBrowserRouter([
@@ -48,7 +49,23 @@ const router = createBrowserRouter([
         path: "/history",
         element: (
           <AuthLayout authentication={true}>
-            <History />
+            <WatchHistory />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/liked-videos",
+        element: (
+          <AuthLayout authentication={true}>
+            <LikedVideos />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/subscribers",
+        element: (
+          <AuthLayout authentication={true}>
+            <Subscribers />
           </AuthLayout>
         ),
       },

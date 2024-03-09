@@ -6,11 +6,11 @@ import VideoUploadModal from "@/components/Modals/video-upload-modal";
 import DashBoardCard from "@/components/Dashboard/dashboard-card";
 import { Eye, UserRound, Heart } from "lucide-react";
 import DashBoardVideoStats from "@/components/Dashboard/dashboard-video-stats";
+import TableDemo from "@/components/Dashboard/dashboard-table";
 
 interface Stats {
   totalLikes: number;
   totalSubscribers: number;
-  totalVideos: number;
   totalVideosViews: number;
 }
 
@@ -61,7 +61,7 @@ const Dashboard: React.FC = () => {
         ) : (
           <div>
             {stats && (
-              <div className="grid grid-col-3 grid-flow-col gap-2">
+              <div className="grid grid-col-3 grid-flow-col gap-2 grid-nowrap">
                 <DashBoardCard
                   icon={
                     <Eye
@@ -90,7 +90,7 @@ const Dashboard: React.FC = () => {
                     />
                   }
                   title="Total Likes"
-                  value={stats.totalVideosViews}
+                  value={stats.totalLikes}
                 />
               </div>
             )}
@@ -103,6 +103,7 @@ const Dashboard: React.FC = () => {
           setRefreshList={setRefreshList}
         />
       </section>
+      <TableDemo />
     </Layout>
   );
 };

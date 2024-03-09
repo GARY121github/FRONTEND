@@ -6,7 +6,7 @@ interface channelDetails {
   username: string;
   fullName: string;
   avatar: string;
-  subscribersCount: number;
+  subscribersCount?: number;
   className?: string;
 }
 const ChannelList: React.FC<channelDetails> = ({
@@ -14,7 +14,7 @@ const ChannelList: React.FC<channelDetails> = ({
   fullName,
   avatar,
   subscribersCount,
-  className = "",
+  className,
 }) => {
   return (
     <Link to={`/@${username}`}>
@@ -25,9 +25,11 @@ const ChannelList: React.FC<channelDetails> = ({
         <div className="col-span-2 flex flex-col justify-center gap-2">
           <h2 className="text-white text-2xl">{fullName}</h2>
           <h1 className="text-slate-200 text-xl">@{username}</h1>
-          <h2 className="text-slate-200 text-lg">
-            {subscribersCount} Subscribers
-          </h2>
+          {subscribersCount && (
+            <h2 className="text-slate-200 text-lg">
+              {subscribersCount} Subscribers
+            </h2>
+          )}
         </div>
       </div>
     </Link>
