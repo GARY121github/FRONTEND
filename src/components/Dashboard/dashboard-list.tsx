@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import ChannelAvatar from "@/components/Channel/channel-avatar";
 import { Button } from "../ui/button";
 import { Trash2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import {
   AlertDialog,
@@ -37,6 +38,7 @@ const DashBoardList: React.FC<Video> = ({
   isPublished,
 }) => {
   const [published, setPublished] = useState(isPublished);
+  const { toast } = useToast();
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -71,7 +73,17 @@ const DashBoardList: React.FC<Video> = ({
         },
       });
       setRefresh(true);
+      toast({
+        title: "Video Deleted",
+        description: "Video Deleted Successfully!",
+        variant: "success",
+      });
     } catch (error) {
+      toast({
+        title: "Deletion Failed",
+        description: "Video Deletion Failed!",
+        variant: "destructive",
+      });
       console.error("Error deleting video:", error);
     }
   };

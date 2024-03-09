@@ -6,7 +6,6 @@ import VideoUploadModal from "@/components/Modals/video-upload-modal";
 import DashBoardCard from "@/components/Dashboard/dashboard-card";
 import { Eye, UserRound, Heart } from "lucide-react";
 import DashBoardVideoStats from "@/components/Dashboard/dashboard-video-stats";
-import TableDemo from "@/components/Dashboard/dashboard-table";
 
 interface Stats {
   totalLikes: number;
@@ -103,7 +102,6 @@ const Dashboard: React.FC = () => {
           setRefreshList={setRefreshList}
         />
       </section>
-      <TableDemo />
     </Layout>
   );
 };
