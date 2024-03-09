@@ -10,14 +10,14 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children, className }) => {
   return (
-    <Container className="min-h-screen grid grid-rows-11">
-      <Navbar className="md:row-span-1 row-span-2" />
-      <div className="flex row-span-10">
-        <section className="sticky top-0 w-[15%] h-full bg-slate-400 border-r-2 z-100 hidden lg:flex lg:basis-[15%]">
+    <Container className="min-h-screen">
+      <Navbar className="min-h-16 h-[10%]" />
+      <div className="grid grid-cols-12 h-[90%]">
+        <section className="col-span-2 h-full bg-slate-400 border-r-2 hidden lg:flex overflow-y-auto">
           <Sidebar className="hidden lg:flex" />
         </section>
         <section
-          className={`bg-slate-500 overflow-y-auto lg:basis-[85%] ${className}`}
+          className={`bg-slate-600 col-span-12 lg:col-span-10 overflow-y-auto ${className}`}
         >
           {children}
         </section>

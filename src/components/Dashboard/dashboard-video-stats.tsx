@@ -5,6 +5,7 @@ import axios from "axios";
 interface Video {
   _id: string;
   title: string;
+  description: string;
   thumbnail: string;
   views: number;
   likes: number;
@@ -13,9 +14,18 @@ interface Video {
   isPublished: boolean;
 }
 
-const DashboardVideoStats = () => {
+interface DashboardVideoStatsProps {
+  refreshList: boolean;
+  setRefreshList: (value: boolean) => void;
+}
+
+const DashboardVideoStats: React.FC<DashboardVideoStatsProps> = ({
+  refreshList,
+  setRefreshList,
+}) => {
   const [videos, setVideos] = useState<Array<Video>>([]);
   const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
 
   const fetchVideos = async () => {
     try {
@@ -38,7 +48,9 @@ const DashboardVideoStats = () => {
 
   useEffect(() => {
     fetchVideos();
-  }, []);
+    setRefresh(false);
+    setRefreshList(false);
+  }, [refresh, refreshList]);
 
   if (loading) {
     return <p>loading....</p>;
@@ -62,8 +74,10 @@ const DashboardVideoStats = () => {
         videos.map((video) => {
           return (
             <DashBoardList
+              setRefresh={setRefresh}
               key={video._id}
               thumbnail={video.thumbnail}
+              description={video.description}
               title={video.title}
               likes={video.likes}
               createdAt={video.createdAt}
