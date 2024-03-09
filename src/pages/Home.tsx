@@ -4,9 +4,6 @@ import axios from "axios";
 import VideoCard from "@/components/video/video-card";
 import Loading from "@/components/loading";
 
-// Import loading spinner animation CSS
-import "./loading-spinner.css";
-
 interface VideoOwner {
   username: string;
   fullName: string;
@@ -32,6 +29,7 @@ interface Video {
 const Home = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [fetchMoreVideos , setFetchMoreVideos] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -39,8 +37,8 @@ const Home = () => {
   const lastVideoRef = useRef<HTMLDivElement | null>(null);
 
   const fetchVideos = async () => {
+    setFetchMoreVideos(true);
     try {
-      setLoading(true); // Set loading to true when fetching new data
       const response = await axios.get(
         `http://localhost:8000/api/v1/videos?page=${page}`,
         {
@@ -56,11 +54,13 @@ const Home = () => {
     } catch (error) {
       setError("Error fetching videos");
     } finally {
-      setLoading(false); // Set loading to false after fetching data
+      setFetchMoreVideos(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
+    setLoading(true);
     fetchVideos();
   }, []);
 
@@ -73,7 +73,7 @@ const Home = () => {
           fetchVideos();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.5 } // Adjust threshold value
     );
 
     if (lastVideoRef.current) {
@@ -87,29 +87,36 @@ const Home = () => {
     };
   }, [hasMore, loading]);
 
+  if(loading) {
+    return <Loading />
+  }
+
   return (
     <Layout>
-      {loading && <Loading className="" />}
       {error && <p>{error}</p>}
       {!loading && !error && Array.isArray(videos) && videos.length > 0 && (
-        <div className="grid grid-cols-3 gap-4 p-4">
-          {videos.map((video) => (
-            <VideoCard
-              key={video._id}
-              title={video.title}
-              createdAt={video.createdAt}
-              description={video.description}
-              duration={video.duration}
-              owner={video.owner}
-              thumbnail={video.thumbnail}
-              videoFile={video.videoFile}
-              views={video.views}
-              _id={video._id}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-3 gap-4 p-4">
+            {videos.map((video, index) => (
+              <VideoCard
+                key={video._id}
+                title={video.title}
+                createdAt={video.createdAt}
+                description={video.description}
+                duration={video.duration}
+                owner={video.owner}
+                thumbnail={video.thumbnail}
+                videoFile={video.videoFile}
+                views={video.views}
+                _id={video._id}
+                ref={videos.length === index + 1 ? lastVideoRef : null}
+              />
+            ))}
+          </div>
+          {fetchMoreVideos && hasMore && <Loading />}
+        </>
       )}
-      {!loading &&
+      {!fetchMoreVideos &&
         !error &&
         (!Array.isArray(videos) || videos.length === 0) && (
           <p>No videos found.</p>
