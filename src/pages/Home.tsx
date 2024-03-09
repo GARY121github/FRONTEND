@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Layout from "@/components/Layout/pages-layout";
 import axios from "axios";
 import VideoCard from "@/components/video/video-card";
+import Loading from "@/components/loading";
 
 interface VideoOwner {
   username: string;
@@ -51,7 +52,7 @@ const Home = () => {
 
   return (
     <Layout>
-      {loading && <p>Loading...</p>}
+      {loading && <Loading className="" />}
       {error && <p>{error}</p>}
       {!loading && !error && Array.isArray(videos) && videos.length > 0 && (
         <div className="grid grid-cols-3 gap-4 p-4">

@@ -6,6 +6,7 @@ import Empty from "../empty";
 import { Play } from "lucide-react";
 import VideoCard from "@/components/video/video-card";
 import useAuth from "@/hooks/useAuth";
+import Loading from "../loading";
 
 interface videoOwner {
   username: string;
@@ -80,7 +81,7 @@ const ChannelVideos: React.FC<ChannelVideosProps> = ({ channelName }) => {
   return (
     <div>
       {loading ? (
-        <h1>Loading...</h1>
+        <Loading />
       ) : videos.length === 0 ? (
         <Empty
           className=""

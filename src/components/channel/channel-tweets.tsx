@@ -8,6 +8,7 @@ import AddTweet from "../Tweet/add-tweet";
 import Tweet from "../Tweet/tweet";
 import ChannelAvatar from "./channel-avatar";
 import useAuth from "@/hooks/useAuth";
+import Loading from "../loading";
 
 interface Owner {
   _id: string;
@@ -70,13 +71,13 @@ const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
   useEffect(() => {
     fetchTweets();
     setRerender(false);
-  }, [rerender , setRerender]);
+  }, [rerender, setRerender]);
 
   return (
     <>
       {user?._id === channelId && <AddTweet setRerender={setRerender} />}
       {loading ? ( // Render loading state if data is being fetched
-        <div>Loading...</div>
+        <Loading />
       ) : tweets.length === 0 ? ( // Render message when no tweets available
         // TODO: Add a message to show when there are no tweets
         <Empty

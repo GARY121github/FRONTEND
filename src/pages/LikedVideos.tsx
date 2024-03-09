@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Layout from "@/components/Layout/pages-layout";
 import axios from "axios";
 import VideoList from "@/components/video/video-list";
+import Loading from "@/components/loading";
 
 interface videoOwner {
   username: string;
@@ -54,7 +55,7 @@ const LikedVideos = () => {
   return (
     <Layout>
       {loading ? (
-        <h1>Loading....</h1>
+        <Loading />
       ) : (
         <div className="flex flex-col gap-1 p-4">
           {videos.length === 0 ? (

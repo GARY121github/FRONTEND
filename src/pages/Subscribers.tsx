@@ -3,6 +3,7 @@ import Layout from "@/components/Layout/pages-layout";
 import useAuth from "@/hooks/useAuth";
 import axios from "axios";
 import ChannelList from "@/components/Channel/channel-list";
+import Loading from "@/components/loading";
 
 interface User {
   avatar: string;
@@ -47,7 +48,7 @@ const Subscribers = () => {
   return (
     <Layout>
       {loading ? (
-        <h1>Loading</h1>
+        <Loading />
       ) : data.length === 0 ? (
         <h1>No Subscribers Available</h1>
       ) : (

@@ -11,6 +11,7 @@ import ChannelsSubscribed from "./channel-subscribed";
 import ChannelTweets from "./channel-tweets";
 import ChannelVideos from "./channel-videos";
 import UploadVideo from "@/components/Modals/video-upload-modal";
+import Loading from "../loading";
 
 interface ChannelDetails {
   _id: string;
@@ -154,7 +155,7 @@ const Channel = () => {
   return (
     <>
       {loading ? (
-        <h1>Loading</h1>
+        <Loading />
       ) : (
         <div className="flex flex-col gap-2">
           <section>

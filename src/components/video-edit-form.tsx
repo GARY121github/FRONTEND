@@ -14,6 +14,8 @@ import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Loading from "./loading";
+import { useToast } from "./ui/use-toast";
 
 const MAX_THUMBNAIL_FILE_SIZE = 500000000; // 5MB
 
@@ -67,6 +69,7 @@ const VideoEditForm: React.FC<VideoEditFormProps> = ({
   description,
 }) => {
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -96,8 +99,18 @@ const VideoEditForm: React.FC<VideoEditFormProps> = ({
       setRefresh(true);
       setLoading(false);
       setIsOpen(false);
+      toast({
+        title: "Video Updated",
+        description: "Video Updated Successfully!",
+        variant: "success",
+      });
     } catch (error) {
       setLoading(false);
+      toast({
+        title: "Update Failed",
+        description: "Video Updating Failed!",
+        variant: "destructive",
+      });
       console.log(error);
     }
   }
@@ -185,7 +198,7 @@ const VideoEditForm: React.FC<VideoEditFormProps> = ({
           className={`group/btn mr-1 w-full items-center gap-x-2 bg-[#ae7aff] hover:bg-[#9c60fe] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e] disabled:opacity-50`}
           disabled={loading}
         >
-          {loading ? "Submitting..." : "Submit"}
+          {loading ? <Loading className="max-h-5" /> : "Submit"}
         </button>
       </form>
     </Form>

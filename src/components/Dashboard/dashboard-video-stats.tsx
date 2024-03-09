@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import DashBoardList from "./dashboard-list";
 import axios from "axios";
+import Loading from "../loading";
 
 interface Video {
   _id: string;
@@ -53,7 +54,7 @@ const DashboardVideoStats: React.FC<DashboardVideoStatsProps> = ({
   }, [refresh, refreshList]);
 
   if (loading) {
-    return <p>loading....</p>;
+    return <Loading />;
   }
 
   return (

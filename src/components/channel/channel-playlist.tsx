@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import Empty from "../empty";
 import { Folder } from "lucide-react";
+import Loading from "../loading";
 
 interface Playlist {
   createdAt: string; // Date and time when the collection was created
@@ -68,7 +69,7 @@ const ChannelPlaylist: React.FC<ChannelPlaylistProps> = ({ channelId }) => {
   return (
     <div className="p-4">
       {loading ? ( // Render loading state if data is being fetched
-        <div>Loading...</div>
+        <Loading />
       ) : playlists.length === 0 ? ( // Render message when no playlists available
         <Empty
           className="w-full my-auto min-h-96"
