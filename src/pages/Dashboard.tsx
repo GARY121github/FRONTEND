@@ -17,6 +17,7 @@ interface Stats {
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<Stats | null>(null); // Initialized with null
   const [loading, setLoading] = useState(false); // Initialized with true
+  const [refreshList, setRefreshList] = useState(false);
   const { user } = useAuth();
 
   const fetchDashboard = async () => {
@@ -53,7 +54,7 @@ const Dashboard: React.FC = () => {
               Here's what's happening with your channel today
             </p>
           </div>
-          <VideoUploadModal />
+          <VideoUploadModal setRefreshList={setRefreshList} />
         </div>
         {loading ? (
           <p>Loading...</p>
@@ -97,7 +98,10 @@ const Dashboard: React.FC = () => {
         )}
       </section>
       <section className="p-4">
-        <DashBoardVideoStats />
+        <DashBoardVideoStats
+          refreshList={refreshList}
+          setRefreshList={setRefreshList}
+        />
       </section>
     </Layout>
   );

@@ -79,11 +79,15 @@ const formSchema = z.object({
 });
 
 interface VideoUploadFormProps {
+  setRefreshList?: (value: boolean) => void;
+  setVideoFile: (value: File | null) => void;
   setStartUpload: (value: boolean) => void;
   setIsOpen: (value: boolean) => void;
 }
 
 const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
+  setRefreshList,
+  setVideoFile,
   setStartUpload,
   setIsOpen,
 }) => {
@@ -103,6 +107,7 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
     try {
       console.log("video uploading started");
       setStartUpload(true);
+      setVideoFile(values.videoFile);
       const response = await axios.post(
         "http://localhost:8000/api/v1/videos",
         {
@@ -118,6 +123,7 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
           },
         }
       );
+      setRefreshList && setRefreshList(true);
       setStartUpload(false);
       setIsOpen(false);
       console.log(response);

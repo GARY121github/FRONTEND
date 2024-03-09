@@ -1,6 +1,6 @@
 import {
   Dialog,
-  DialogClose,
+  // DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -12,22 +12,30 @@ import { Plus } from "lucide-react";
 import VideoUploadProgress from "../video-upload-progress";
 import { useEffect, useState } from "react";
 
-const VideoUploadModal = () => {
+interface VideoUploadModalProps {
+  setRefreshList?: (value: boolean) => void;
+}
+
+const VideoUploadModal: React.FC<VideoUploadModalProps> = ({
+  setRefreshList,
+}) => {
   const [startUplaod, setStartUpload] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
 
   useEffect(() => {
     // Any side effects can be placed here
-  }, [isOpen]);
+  }, [isOpen, videoFile, startUplaod]);
 
   return (
     <Dialog open={isOpen}>
       <DialogTrigger>
-        <div className="flex items-center gap-2 justify-center bg-purple-500 p-2 rounded-lg hover:bg-purple-600">
+        <div
+          className="flex items-center gap-2 justify-center bg-purple-500 p-2 rounded-lg hover:bg-purple-600"
+          onClick={() => setIsOpen(true)}
+        >
           <Plus size={20} className="text-white" />
-          <p className="text-white" onClick={() => setIsOpen(true)}>
-            New video
-          </p>
+          <p className="text-white">New video</p>
         </div>
       </DialogTrigger>
       {startUplaod ? (
@@ -40,13 +48,16 @@ const VideoUploadModal = () => {
                   Track your video uploading process.
                 </div>
               </div>
-              <DialogClose className="group/btn mr-1 flex w-auto items-center gap-x-2 bg-[#ae7aff] hover:bg-[#9c60fe] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e]">
+              <button
+                className="group/btn mr-1 flex w-auto items-center gap-x-2 bg-[#ae7aff] hover:bg-[#9c60fe] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e]"
+                onClick={() => setIsOpen(false)}
+              >
                 Close
-              </DialogClose>
+              </button>
             </DialogTitle>
           </DialogHeader>
           <DialogDescription>
-            <VideoUploadProgress />
+            {videoFile && <VideoUploadProgress videoFile={videoFile} />}
           </DialogDescription>
         </DialogContent>
       ) : (
@@ -54,14 +65,19 @@ const VideoUploadModal = () => {
           <DialogHeader className="min-w-full">
             <DialogTitle className="flex justify-between items-center p-2 px-4">
               <div className="text-white">Upload Videos</div>
-              <DialogClose className="group/btn mr-1 flex w-auto items-center gap-x-2 bg-[#ae7aff] hover:bg-[#9c60fe] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e]">
+              <button
+                className="group/btn mr-1 flex w-auto items-center gap-x-2 bg-[#ae7aff] hover:bg-[#9c60fe] px-3 py-2 text-center font-bold text-black shadow-[5px_5px_0px_0px_#4f4e4e] transition-all duration-150 ease-in-out active:translate-x-[5px] active:translate-y-[5px] active:shadow-[0px_0px_0px_0px_#4f4e4e]"
+                onClick={() => setIsOpen(false)}
+              >
                 Close
-              </DialogClose>
+              </button>
             </DialogTitle>
           </DialogHeader>
           <hr />
           <DialogDescription className="px-20">
             <VideoUploadForm
+              setRefreshList={setRefreshList}
+              setVideoFile={setVideoFile}
               setStartUpload={setStartUpload}
               setIsOpen={setIsOpen}
             />

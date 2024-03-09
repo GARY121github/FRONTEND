@@ -2,12 +2,24 @@ import React, { useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import ChannelAvatar from "@/components/Channel/channel-avatar";
 import { Button } from "../ui/button";
-import { Trash2, Pencil } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import axios from "axios";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
+import VideoEditModal from "../Modals/video-edit-modal";
 
 interface Video {
+  setRefresh: (value: boolean) => void;
   _id: string;
   title: string;
+  description: string;
   thumbnail: string;
   likes: number;
   createdAt: string;
@@ -15,8 +27,10 @@ interface Video {
 }
 
 const DashBoardList: React.FC<Video> = ({
+  setRefresh,
   _id,
   title,
+  description,
   thumbnail,
   likes,
   createdAt,
@@ -50,12 +64,21 @@ const DashBoardList: React.FC<Video> = ({
   };
 
   const handleDelete = async () => {
-    // TODO
+    try {
+      await axios.delete(`http://localhost:8000/api/v1/videos/${_id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setRefresh(true);
+    } catch (error) {
+      console.error("Error deleting video:", error);
+    }
   };
 
-  const handleEdit = () => {
-    //TODO
-  };
+  // const handleEdit = () => {
+  //   //TODO
+  // };
 
   return (
     <div className="border-b-2 border-dotted">
@@ -98,12 +121,35 @@ const DashBoardList: React.FC<Video> = ({
             <p className="text-center">{formatDate(createdAt)}</p>
           </div>
           <div className="flex gap-1">
-            <Button onClick={handleDelete}>
-              <Trash2 size={15} />
-            </Button>
-            <Button onClick={handleEdit}>
-              <Pencil size={15} />
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <Button>
+                  <Trash2 size={15} />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-center">
+                    {"Delete Video?"}
+                  </AlertDialogTitle>
+                </AlertDialogHeader>
+
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="ml-2"
+                  onClick={() => handleDelete()}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogContent>
+            </AlertDialog>
+            <VideoEditModal
+              setRefresh={setRefresh}
+              thumbnail={thumbnail}
+              title={title}
+              description={description}
+              _id={_id}
+            />
           </div>
         </h3>
       </div>

@@ -2,7 +2,13 @@ import React from "react";
 import { Button } from "./ui/button";
 import { Film } from "lucide-react";
 
-const VideoUploadProgress = () => {
+interface VideoUploadProgressProps {
+  videoFile: File;
+}
+
+const VideoUploadProgress: React.FC<VideoUploadProgressProps> = ({
+  videoFile,
+}) => {
   return (
     <div className="flex flex-col gap-4 px-4">
       <div className="flex flex-col gap-2 border p-4">
@@ -12,8 +18,8 @@ const VideoUploadProgress = () => {
             size={32}
           />
           <div className="flex flex-col">
-            <div>{"FILE_NAME"}</div>
-            <div>{"16 MB"}</div>
+            <div>{videoFile?.name}</div>
+            <div>{videoFile && videoFile.size / 10 ** 6}</div>
           </div>
         </div>
         <div className="flex gap-1 items-center ml-4">
