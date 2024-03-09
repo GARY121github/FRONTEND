@@ -2,7 +2,6 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import axios from "axios";
 import useAuth from "@/hooks/useAuth";
 
 import { useToast } from "@/components/ui/use-toast";
@@ -17,6 +16,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+
+import { loginService } from "@/services/user.service.ts";
 
 // username, email, password
 const formSchema = z.object({
@@ -46,33 +47,21 @@ function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const formData = new FormData();
-      formData.append("username", values.username);
-      formData.append("email", values.email);
-      formData.append("password", values.password);
-
       setLoading(true);
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/users/login",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json", // Set the content type to JSON
-          },
-        }
+      const response = await loginService(
+        values.username,
+        values.password,
+        values.email
       );
-      if (response.status !== 200) {
-        throw new Error(response?.data?.message);
-      }
-      console.log(response);
-      login(response.data.data.user);
-      const accessToken = response.data.data.accessToken;
-      const refreshToken = response.data.data.refreshToken;
+      
+      login(response.user);
+      const accessToken = response.accessToken;
+      const refreshToken = response.refreshToken;
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       toast({
         title: "Login Successfully",
-        description: response.data.message,
+        description: response.message,
       });
       setLoading(false);
       navigator("/");

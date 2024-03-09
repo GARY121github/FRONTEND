@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import ChannelAvatar from "@/components/Channel/channel-avatar";
 import { Link } from "react-router-dom";
 import {
@@ -27,63 +27,27 @@ interface VideoCardProps {
   _id: string;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({
-  createdAt,
-  duration,
-  owner,
-  thumbnail,
-  title,
-  views,
-  videoFile,
-  description,
-  _id,
-}) => {
-  const formattedDuration = secondsToTime(duration);
-  const timeDifference = calculateTimeDifference(new Date(createdAt));
+const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
+  (
+    {
+      createdAt,
+      duration,
+      owner,
+      thumbnail,
+      title,
+      views,
+      videoFile,
+      description,
+      _id,
+    },
+    ref
+  ) => {
+    const formattedDuration = secondsToTime(duration);
+    const timeDifference = calculateTimeDifference(new Date(createdAt));
 
-  return (
-    <div className="flex flex-col gap-1 w-96">
-      <div className="relative">
-        <Link
-          to={`/video/${_id}`}
-          state={{
-            video: {
-              videoFile,
-              views,
-              title,
-              duration,
-              createdAt,
-              description,
-              owner,
-              _id,
-            },
-          }}
-        >
-          <img
-            src={thumbnail}
-            className="object-cover h-[14rem] w-96 rounded-md"
-            alt="Thumbnail"
-          />
-          <span className="bg-black text-white text-sm p-1 rounded-md absolute right-1 bottom-1">
-            {formattedDuration}
-          </span>
-        </Link>
-      </div>
-      <div className="flex gap-2 p-1">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger className="p-0">
-              <Link to={`/@${owner?.username}`}>
-                <ChannelAvatar avatar={owner?.avatar} />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent className="bg-black border-none text-white">
-              <span>{owner?.username}</span>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
-        <div className="flex flex-col justify-around">
+    return (
+      <div ref={ref} className="flex flex-col gap-1 w-96">
+        <div className="relative">
           <Link
             to={`/video/${_id}`}
             state={{
@@ -99,23 +63,64 @@ const VideoCard: React.FC<VideoCardProps> = ({
               },
             }}
           >
-            <h3 className="text-white text-xl font-semibold line-clamp-2">
-              {title}
-            </h3>
+            <img
+              src={thumbnail}
+              className="object-cover h-[14rem] w-96 rounded-md"
+              alt="Thumbnail"
+            />
+            <span className="bg-black text-white text-sm p-1 rounded-md absolute right-1 bottom-1">
+              {formattedDuration}
+            </span>
           </Link>
-          <Link to={`/@${owner?.username}`}>
-            <p className="text-slate-200 hover:text-slate-400">
-              {owner?.fullName}
+        </div>
+        <div className="flex gap-2 p-1">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className="p-0">
+                <Link to={`/@${owner?.username}`}>
+                  <ChannelAvatar avatar={owner?.avatar} />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent className="bg-black border-none text-white">
+                <span>{owner?.username}</span>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <div className="flex flex-col justify-around">
+            <Link
+              to={`/video/${_id}`}
+              state={{
+                video: {
+                  videoFile,
+                  views,
+                  title,
+                  duration,
+                  createdAt,
+                  description,
+                  owner,
+                  _id,
+                },
+              }}
+            >
+              <h3 className="text-white text-xl font-semibold line-clamp-1">
+                {title}
+              </h3>
+            </Link>
+            <Link to={`/@${owner?.username}`}>
+              <p className="text-slate-200 hover:text-slate-400">
+                {owner?.fullName}
+              </p>
+            </Link>
+            <p className="text-white text-sm">
+              {views} views | {timeDifference}
             </p>
-          </Link>
-          <p className="text-white text-sm">
-            {views} views | {timeDifference}
-          </p>
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 export default VideoCard;
 

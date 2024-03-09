@@ -85,6 +85,7 @@ const SideBar: React.FC<SideBarProps> = ({ className }) => {
           }) => {
             return (
               <SideBarItems
+                key={element.title}
                 title={element.title}
                 logo={element.logo}
                 navigation={element.navigation}
@@ -102,6 +103,7 @@ const SideBar: React.FC<SideBarProps> = ({ className }) => {
           }) => {
             return (
               <SideBarItems
+                key={element.title}
                 title={element.title}
                 logo={element.logo}
                 navigation={element.navigation}

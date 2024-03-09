@@ -2,11 +2,10 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import axios from "axios";
 import useAuth from "@/hooks/useAuth";
-
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 import {
   Form,
   FormControl,
@@ -16,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { registerUserService } from "@/services/user.service.ts";
 
 const formSchema = z.object({
   username: z.string().trim().min(4, {
@@ -36,8 +36,9 @@ const formSchema = z.object({
 
 function SignUpFrom() {
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast()
-  const {user , login} = useAuth();
+  const { toast } = useToast();
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,33 +53,42 @@ function SignUpFrom() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+
     try {
-      const formData = new FormData();
-      formData.append("username", values.username);
-      formData.append("email", values.email);
-      formData.append("fullName", values.fullName);
-      formData.append("password", values.password);
-      values.avatar?.name && formData.append("avatar", values.avatar!);
-      values.coverImage?.name &&
-        formData.append("coverImage", values.coverImage!);
+      // Call the registerUserService to register the user
+      const response = await registerUserService(values);
 
-      console.log(user);
+      // Extract necessary data from the response
+      const { user, accessToken, refreshToken } = response;
 
-      setLoading(true);
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/users/register",
-        formData
-      );
+      // Store access token and refresh token in localStorage
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
 
+      // Call login function with the user data
+      login(user);
+
+      // Show success toast
       toast({
-        title: "Register Success",
-        description: response.data.message,
+        title: "Registration Successful",
+        description: "User registered successfully.",
+        duration: 5000, // Optional: specify toast duration
       });
-      
-      login(response.data.data);
-      setLoading(false);
+
+      // Redirect to home page
+      navigate("/");
     } catch (error) {
-      console.error(error);
+      // Handle error
+      console.error("Error registering user:", error);
+
+      // Show error toast
+      toast({
+        title: "Registration Failed",
+        description: "Failed to register user. Please try again.",
+        duration: 5000,
+      });
+    } finally {
       setLoading(false);
     }
   }
