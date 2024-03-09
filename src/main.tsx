@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
@@ -18,6 +17,7 @@ import {
   Search,
   Playlist,
   LikedVideos,
+  Subscribers,
 } from "@/pages/index";
 
 const router = createBrowserRouter([
@@ -58,6 +58,14 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <LikedVideos />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/subscribers",
+        element: (
+          <AuthLayout authentication={true}>
+            <Subscribers />
           </AuthLayout>
         ),
       },

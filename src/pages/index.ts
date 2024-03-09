@@ -8,6 +8,7 @@ import Dashboard from "./Dashboard";
 import Search from "./Search";
 import Playlist from "./Playlist";
 import LikedVideos from "./LikedVideos";
+import Subscribers from "./Subscribers";
 
 export {
   Auth,
@@ -20,4 +21,5 @@ export {
   Search,
   Playlist,
   LikedVideos,
+  Subscribers,
 };
