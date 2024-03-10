@@ -1,4 +1,5 @@
-import Auth from "./Auth";
+import Login from "./Login";
+import SignUp from "./SignUp";
 import WatchHistory from "./WatchHistory";
 import Home from "./Home";
 import Video from "./Video";
@@ -11,7 +12,8 @@ import LikedVideos from "./LikedVideos";
 import Subscribers from "./Subscribers";
 
 export {
-  Auth,
+  Login,
+  SignUp,
   WatchHistory,
   Home,
   Video,

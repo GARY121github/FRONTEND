@@ -8,7 +8,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import AuthLayout from "@/components/Layout/auth-layout";
 import {
   Home,
-  Auth,
+  Login,
+  SignUp,
   WatchHistory,
   Video,
   Channel,
@@ -38,7 +39,7 @@ const router = createBrowserRouter([
         path: "/login",
         element: (
           <AuthLayout authentication={false}>
-            <Auth login={true} />
+            <Login />
           </AuthLayout>
         ),
       },
@@ -46,7 +47,7 @@ const router = createBrowserRouter([
         path: "/register",
         element: (
           <AuthLayout authentication={false}>
-            <Auth login={false} />
+            <SignUp />
           </AuthLayout>
         ),
       },
