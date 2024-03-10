@@ -55,7 +55,7 @@ const Home = () => {
       {loading && <Loading className="" />}
       {error && <p>{error}</p>}
       {!loading && !error && Array.isArray(videos) && videos.length > 0 && (
-        <div className="grid grid-cols-3 gap-4 p-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
           {videos.map((video) => (
             <VideoCard
               key={video._id}

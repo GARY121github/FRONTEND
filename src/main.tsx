@@ -19,6 +19,7 @@ import {
   LikedVideos,
   Subscribers,
 } from "@/pages/index";
+import LandingPage from "./pages/LandingPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/landingpage",
+        element: <LandingPage />,
       },
       {
         path: "/login",

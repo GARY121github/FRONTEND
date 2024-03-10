@@ -42,7 +42,7 @@ const VideoCard: React.FC<VideoCardProps> = ({
   const timeDifference = calculateTimeDifference(new Date(createdAt));
 
   return (
-    <div className="flex flex-col gap-1 w-96">
+    <div className="flex flex-col gap-1 2xl:w-96 ">
       <div className="relative">
         <Link
           to={`/video/${_id}`}
@@ -99,16 +99,16 @@ const VideoCard: React.FC<VideoCardProps> = ({
               },
             }}
           >
-            <h3 className="text-white text-xl font-semibold line-clamp-2">
+            <h3 className="text-white text-base md:text-xl font-semibold line-clamp-2">
               {title}
             </h3>
           </Link>
           <Link to={`/@${owner?.username}`}>
-            <p className="text-slate-200 hover:text-slate-400">
+            <p className="text-slate-200 text:sm md:text-base hover:text-slate-400">
               {owner?.fullName}
             </p>
           </Link>
-          <p className="text-white text-sm">
+          <p className="text-white text-xs md:text-sm">
             {views} views | {timeDifference}
           </p>
         </div>
