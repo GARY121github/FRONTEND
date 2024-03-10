@@ -18,7 +18,6 @@ const Protected: React.FC<ProtectedProps> = ({
   const { toast } = useToast();
 
   useEffect(() => {
-    console.log(authentication, isAuthenticated);
     if (!authentication && isAuthenticated) {
       toast({
         variant: "destructive",

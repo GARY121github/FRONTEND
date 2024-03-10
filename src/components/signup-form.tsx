@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { registerUserService } from "@/services/user.service.ts";
+import { registerUser } from "@/services/user.service.ts";
 
 const formSchema = z.object({
   username: z.string().trim().min(4, {
@@ -57,7 +57,7 @@ function SignUpFrom() {
 
     try {
       // Call the registerUserService to register the user
-      const response = await registerUserService(values);
+      const response = await registerUser(values);
 
       // Extract necessary data from the response
       const { user, accessToken, refreshToken } = response;

@@ -10,6 +10,8 @@ import Search from "./Search";
 import Playlist from "./Playlist";
 import LikedVideos from "./LikedVideos";
 import Subscribers from "./Subscribers";
+import Settings from "./Settings";
+import Support from "./Support";
 
 export {
   Login,
@@ -24,4 +26,6 @@ export {
   Playlist,
   LikedVideos,
   Subscribers,
+  Settings,
+  Support,
 };

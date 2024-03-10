@@ -19,6 +19,8 @@ import {
   Playlist,
   LikedVideos,
   Subscribers,
+  Settings,
+  Support,
 } from "@/pages/index";
 
 const router = createBrowserRouter([
@@ -28,7 +30,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />,
+        element: (
+          <AuthLayout authentication={true}>
+            <Home />
+          </AuthLayout>
+        ),
       },
       {
         path: "/login",
@@ -73,9 +79,10 @@ const router = createBrowserRouter([
       {
         path: "/video/:id",
         element: (
-          // <AuthLayout authentication={true}>
-          <Video />
-          // </AuthLayout>
+          <AuthLayout authentication={true}>
+            <Video />
+            //{" "}
+          </AuthLayout>
         ),
       },
       {
@@ -107,6 +114,22 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <Dashboard />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/settings",
+        element: (
+          <AuthLayout authentication={true}>
+            <Settings />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/support",
+        element: (
+          <AuthLayout authentication={true}>
+            <Support />
           </AuthLayout>
         ),
       },
