@@ -9,7 +9,7 @@ export const videoLikes = async (videoId: string) => {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     });
-    return response;
+    return response.data.data;
   } catch (error) {
     throw new Error("Error getting video likes: " + error);
   }
@@ -17,7 +17,7 @@ export const videoLikes = async (videoId: string) => {
 
 export const togglingLike = async (videoId: string) => {
   try {
-    await axios.post(
+    const response = await axios.post(
       `${baseUrl}/likes/toggle/v/${videoId}`,
       {},
       {
@@ -26,6 +26,7 @@ export const togglingLike = async (videoId: string) => {
         },
       }
     );
+    return response.data.data;
   } catch (error) {
     throw new Error("Error toggling like: " + error);
   }

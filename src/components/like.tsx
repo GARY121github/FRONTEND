@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { videoLikes } from "@/services/like.service";
+import { togglingLike, videoLikes } from "@/services/like.service";
 
 interface likeProps {
   likeOf: string;
@@ -16,8 +15,8 @@ const Like: React.FC<likeProps> = ({ likeOf, id }) => {
   const getVideoLikes = async () => {
     try {
       const response = await videoLikes(id);
-      setLike(response.data.data.totalLikes);
-      setIsLiked(response.data.data.isLikedByUser);
+      setLike(response.totalLikes);
+      setIsLiked(response.isLikedByUser);
     } catch (error) {
       console.log(error);
     }
@@ -25,8 +24,13 @@ const Like: React.FC<likeProps> = ({ likeOf, id }) => {
 
   const toggleLike = async () => {
     try {
+      isLiked ? setLike((like) => like - 1) : setLike((like) => like + 1);
+      setIsLiked((isLiked) => !isLiked);
+      await togglingLike(id);
       getVideoLikes();
     } catch (error) {
+      isLiked ? setLike((like) => like + 1) : setLike((like) => like - 1);
+      setIsLiked((isLiked) => !isLiked);
       console.log(error);
     }
   };
