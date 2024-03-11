@@ -12,8 +12,8 @@ import Video from "@/components/video";
 import Like from "../like";
 import SaveIntoPlaylist from "@/components/Playlist/save-into-playlist";
 import ChannelDetails from "@/components/Channel/channel-details";
-import axios from "axios";
 import useAuth from "@/hooks/useAuth";
+import { incrementViewCount } from "@/services/videos.service";
 
 const VideoDetails = () => {
   const { video } = useLocation().state;
@@ -22,11 +22,7 @@ const VideoDetails = () => {
 
   const increaseViewCount = async () => {
     try {
-      await axios.get(`http://localhost:8000/api/v1/videos/${video._id}/view`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      await incrementViewCount(video._id);
     } catch (error) {
       console.log(error);
     }
