@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import axios from "axios";
 import { useCallback, useEffect } from "react";
+import { addTweet } from "@/services/tweet.service.ts";
 
 const FormSchema = z.object({
   content: z.string().trim().min(1, {
@@ -33,32 +33,30 @@ const AddTweet: React.FC<AddTweetProps> = ({ setRerender }) => {
     },
   });
 
-  const addTweet = useCallback(async (data: z.infer<typeof FormSchema>) => {
-    try {
-      console.log(data);
-      await axios.post("http://localhost:8000/api/v1/tweets", data, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
-      setRerender(prev => !prev);
-      toast({
-        variant: "success",
-        title: "Tweet added",
-        description: "Your tweet has been added successfully",
-      });
-      form.reset();
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+  const addTweetHandler = useCallback(
+    async (data: z.infer<typeof FormSchema>) => {
+      try {
+        await addTweet(data.content);
+        setRerender((prev) => !prev);
+        toast({
+          variant: "success",
+          title: "Tweet added",
+          description: "Your tweet has been added successfully",
+        });
+        form.reset();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    []
+  );
 
   useEffect(() => {}, [addTweet, setRerender]);
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(addTweet)}
+        onSubmit={form.handleSubmit(addTweetHandler)}
         className="w-full space-y-6 p-2 relative"
       >
         <FormField

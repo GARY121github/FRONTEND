@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import ChannelAvatar from "@/components/Channel/channel-avatar";
 import { Button } from "@/components/ui/button";
 import { BellPlus, BellMinus } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import { getUsersChannel } from "@/services/user.service.ts";
+import { toggleSubscription } from "@/services/subscription.service.ts";
 
 interface props {
   channelName: string;
@@ -28,40 +29,13 @@ const ChannelDetails: React.FC<props> = ({ channelName }) => {
   const { user } = useAuth();
 
   const getChannelDetails = async () => {
-    const storedAccessToken = localStorage.getItem("accessToken");
-    if (!storedAccessToken) {
-      console.log("YOU NEED TO LOGIN FIRST");
-      return;
-    }
-
-    const response = await axios.get(
-      `http://localhost:8000/api/v1/users/c/${channelName}`,
-      {
-        headers: {
-          Authorization: `Bearer ${storedAccessToken}`,
-        },
-      }
-    );
-    setChannel(response.data.data);
-    return response.data.data.isSubscribed;
+    const response = await getUsersChannel(channelName);
+    setChannel(response);
+    return response.isSubscribed;
   };
 
-  const toggelSubscription = async () => {
-    const storedAccessToken = localStorage.getItem("accessToken");
-    if (!storedAccessToken) {
-      console.log("YOU NEED TO LOGIN FIRST");
-      return;
-    }
-
-    await axios.post(
-      `http://localhost:8000/api/v1/subscriptions/c/${channel?._id}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${storedAccessToken}`,
-        },
-      }
-    );
+  const toggelSubscriptionHandler = async () => {
+    await toggleSubscription(channel!._id);
     setIsSubscribed((prev) => !prev);
   };
 
@@ -89,7 +63,7 @@ const ChannelDetails: React.FC<props> = ({ channelName }) => {
         </Link>
       )}
       {user && user.username !== channelName ? (
-        <section onClick={toggelSubscription}>
+        <section onClick={toggelSubscriptionHandler}>
           {isSubscribed ? (
             <Button className="bg-green-600 hover:bg-green-500">
               <BellMinus />

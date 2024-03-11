@@ -9,13 +9,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Loading from "./loading";
 import { useToast } from "./ui/use-toast";
+import { editVideo } from "@/services/videos.service";
 
 const MAX_THUMBNAIL_FILE_SIZE = 500000000; // 5MB
 
@@ -81,21 +81,15 @@ const VideoEditForm: React.FC<VideoEditFormProps> = ({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const formData = new FormData();
-    formData.append("thumbnail", values.thumbnail);
-    formData.append("title", values.title);
-    formData.append("description", values.description);
     setLoading(true);
     try {
-      await axios.patch(
-        `http://localhost:8000/api/v1/videos/${_id}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
+      const response = await editVideo(
+        _id,
+        values.thumbnail,
+        values.title,
+        values.description
       );
+      console.log(response);
       setRefresh(true);
       setLoading(false);
       setIsOpen(false);

@@ -13,7 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ListPlus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import axios from "axios";
+import { createPlaylist } from "@/services/playlist.service.ts";
+import Loading from "../loading";
 
 interface CreatePlaylistProps {
   updatePlaylist: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,6 +28,7 @@ const CreateNewPlaylist: React.FC<CreatePlaylistProps> = ({
   const thumbnailRef = useRef<HTMLInputElement>(null); // Ref for thumbnail input
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false); // State to control modal open/close
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission
@@ -38,21 +40,12 @@ const CreateNewPlaylist: React.FC<CreatePlaylistProps> = ({
       nameRef.current.value.trim().length !== 0 &&
       descriptionRef.current.value.trim().length !== 0
     ) {
-      const formData = new FormData();
-      formData.append("name", nameRef.current.value);
-      formData.append("description", descriptionRef.current.value);
-      formData.append("thumbnail", thumbnailRef.current.files![0]); // Append the file to FormData
-
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/v1/playlist",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            },
-          }
+        setLoading(true);
+        const response = await createPlaylist(
+          nameRef.current.value,
+          descriptionRef.current.value,
+          thumbnailRef.current.files![0]
         );
         console.log(response);
         toast({
@@ -62,6 +55,7 @@ const CreateNewPlaylist: React.FC<CreatePlaylistProps> = ({
         });
         setIsOpen(false); // Close modal after playlist is created
         updatePlaylist((prev) => !prev); // Rerender the component to fetch updated playlists
+        setLoading(false);
       } catch (error) {
         console.error(error);
         toast({
@@ -96,51 +90,57 @@ const CreateNewPlaylist: React.FC<CreatePlaylistProps> = ({
               Create new playlist
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input
-                  id="name"
-                  placeholder="Enter playlist name"
-                  className="col-span-3"
-                  autoComplete="off"
-                  ref={nameRef}
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right">
-                  Description
-                </Label>
-                <Textarea
-                  id="description"
-                  placeholder="Enter playlist description"
-                  className="col-span-3"
-                  ref={descriptionRef}
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="thumbnail" className="text-right">
-                  Thumbnail
-                </Label>
-                <Input
-                  id="thumbnail"
-                  type="file" // Set input type to file for uploading
-                  ref={thumbnailRef}
-                  accept="image/*" // Set accepted file types to images
-                  className="col-span-3"
-                />
-              </div>
+          {loading ? (
+            <div className="flex flex-col h-36 justify-center items-center">
+              <Loading />
             </div>
-            <DialogFooter>
-              <Button variant="destructive" onClick={() => setIsOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">Create</Button>
-            </DialogFooter>
-          </form>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Name
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder="Enter playlist name"
+                    className="col-span-3"
+                    autoComplete="off"
+                    ref={nameRef}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="description" className="text-right">
+                    Description
+                  </Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Enter playlist description"
+                    className="col-span-3"
+                    ref={descriptionRef}
+                  />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="thumbnail" className="text-right">
+                    Thumbnail
+                  </Label>
+                  <Input
+                    id="thumbnail"
+                    type="file" // Set input type to file for uploading
+                    ref={thumbnailRef}
+                    accept="image/*" // Set accepted file types to images
+                    className="col-span-3"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="destructive" onClick={() => setIsOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">Create</Button>
+              </DialogFooter>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
     </>

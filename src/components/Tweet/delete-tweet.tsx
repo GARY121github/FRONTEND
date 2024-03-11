@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
-import axios from "axios";
+import { deleteTweet } from "@/services/tweet.service.ts";
 
 interface DeleteTweetProps {
   tweetId: string;
@@ -19,22 +19,9 @@ interface DeleteTweetProps {
 }
 const DeleteTweet: React.FC<DeleteTweetProps> = ({ tweetId, setRerender }) => {
   const { toast } = useToast();
-  const deleteTweet = async () => {
+  const deleteTweetHandler = async () => {
     try {
-      const storedAccessToken = localStorage.getItem("accessToken");
-      if (!storedAccessToken) {
-        toast({
-          variant: "destructive",
-          title: "Unauthorized",
-          description: "You need to log in first to access this page.",
-        });
-        return;
-      }
-      await axios.delete(`http://localhost:8000/api/v1/tweets/${tweetId}`, {
-        headers: {
-          Authorization: `Bearer ${storedAccessToken}`,
-        },
-      });
+      await deleteTweet(tweetId);
       setRerender(true);
       toast({
         variant: "success",
@@ -64,7 +51,7 @@ const DeleteTweet: React.FC<DeleteTweetProps> = ({ tweetId, setRerender }) => {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             className="bg-red-600 text-white hover:bg-red-700"
-            onClick={deleteTweet}
+            onClick={deleteTweetHandler}
           >
             Delete
           </AlertDialogAction>
