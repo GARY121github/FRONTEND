@@ -10,9 +10,9 @@ import {
 import { Button } from "../ui/button";
 import CreateNewPlaylist from "./create-new-playlist";
 import useAuth from "@/hooks/useAuth";
-import axios from "axios";
 import AddToPlaylistPopUp from "./add-to-playlist-popup";
-
+import { getChannelPlaylist } from "@/services/playlist.service.ts";
+import Loading from "../loading";
 
 interface VideoType {
   // Define properties for video if needed
@@ -37,26 +37,25 @@ const SaveToPlaylist: React.FC<SaveToPlaylistProps> = ({ videoId }) => {
   const [playlists, setPlaylists] = useState<Array<PlaylistType>>([]);
   const [rerender, setRerender] = useState(false);
   const { user } = useAuth();
-
+  const [loadings, setLoadings] = useState(false);
   const fetchUsersPlaylists = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/playlist/user/${user?._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setPlaylists(response.data.data);
+      setLoadings(true);
+      const response = await getChannelPlaylist(user!._id);
+      setPlaylists(response);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadings(false);
     }
   };
   useEffect(() => {
     fetchUsersPlaylists();
     setRerender(false);
   }, [user, rerender]);
+
+  if (loadings) return <Loading />;
+  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -66,7 +65,9 @@ const SaveToPlaylist: React.FC<SaveToPlaylistProps> = ({ videoId }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel className="text-center font-bold">Save to Playlist</DropdownMenuLabel>
+        <DropdownMenuLabel className="text-center font-bold">
+          Save to Playlist
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <div className="overflow-y-auto max-h-32 scroll-m-0 flex flex-col">
           {playlists.map((playlist) => (

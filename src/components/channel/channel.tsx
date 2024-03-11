@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo, ReactNode, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import axios from "axios";
 import ChannelCoverImage from "./channel-coverImage";
 import ChannelAvatar from "./channel-avatar";
 import { Button } from "../ui/button";
@@ -12,6 +11,8 @@ import ChannelTweets from "./channel-tweets";
 import ChannelVideos from "./channel-videos";
 import UploadVideo from "@/components/Modals/video-upload-modal";
 import Loading from "../loading";
+import { getUsersChannel } from "@/services/user.service.ts";
+import { toggleSubscription } from "@/services/subscription.service.ts";
 
 interface ChannelDetails {
   _id: string;
@@ -41,30 +42,11 @@ const Channel = () => {
   const [component, setComponent] = useState<ReactNode>();
 
   const fetchChannelDetails = useCallback(
-    async (channelName: string | undefined) => {
+    async (channelName: string) => {
       try {
-        const storedAccessToken = localStorage.getItem("accessToken");
-        if (!storedAccessToken) {
-          toast({
-            variant: "destructive",
-            title: "Unauthorized",
-            description: "You need to login first to access this page.",
-          });
-          navigate("/login");
-          return;
-        }
-
         setLoading(true);
-        const response = await axios.get(
-          `http://localhost:8000/api/v1/users/c/${channelName?.substring(1)}`,
-          {
-            headers: {
-              Authorization: `Bearer ${storedAccessToken}`,
-            },
-          }
-        );
-        const channelData = response.data.data;
-        setChannel(channelData);
+        const response = await getUsersChannel(channelName.substring(1));
+        setChannel(response);
         setLoading(false);
       } catch (error) {
         toast({
@@ -78,30 +60,9 @@ const Channel = () => {
     [toast, navigate]
   );
 
-  const toggelSubscription = useCallback(async () => {
+  const toggelSubscriptionHandler = useCallback(async () => {
     try {
-      const storedAccessToken = localStorage.getItem("accessToken");
-      if (!storedAccessToken) {
-        toast({
-          variant: "destructive",
-          title: "Unauthorized",
-          description: "You need to login first to access this page.",
-        });
-        navigate("/login");
-        return;
-      }
-
-      const response = await axios.post(
-        `http://localhost:8000/api/v1/subscriptions/c/${channel?._id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${storedAccessToken}`,
-          },
-        }
-      );
-      console.log(response);
-      // Set reloadChannel to true to trigger page reload
+      await toggleSubscription(channel!._id);
       setReloadChannel(true);
     } catch (error) {
       console.log(error);
@@ -109,13 +70,13 @@ const Channel = () => {
   }, [channel, toast, navigate]);
 
   useEffect(() => {
-    fetchChannelDetails(channelName);
+    fetchChannelDetails(channelName!);
   }, [channelName, fetchChannelDetails, reloadChannel]);
 
   useEffect(() => {
     // Reset reloadChannel after the effect is triggered
     setReloadChannel(false);
-  }, [reloadChannel]);
+  }, [reloadChannel, user, channelName]);
 
   const channelItems = useMemo<ChannelItem[]>(() => {
     if (!channel || !channelName) return [];
@@ -188,7 +149,7 @@ const Channel = () => {
                         ? "bg-gray-500 hover:bg-gray-600"
                         : "bg-red-500 hover:bg-red-600"
                     }`}
-                    onClick={toggelSubscription}
+                    onClick={toggelSubscriptionHandler}
                   >
                     {channel.isSubscribed ? "Subscribed" : "Subscribe"}
                   </Button>

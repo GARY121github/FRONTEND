@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
-import axios from "axios";
+import { editTweet } from "@/services/tweet.service.ts";
 
 const FormSchema = z.object({
   content: z
@@ -50,7 +50,7 @@ const EditTweet: React.FC<EditTweetProps> = ({
     },
   });
 
-  const editTweet = async (data: z.infer<typeof FormSchema>) => {
+  const editTweetHandler = async (data: z.infer<typeof FormSchema>) => {
     try {
       if (data.content === text) {
         toast({
@@ -60,17 +60,7 @@ const EditTweet: React.FC<EditTweetProps> = ({
         });
         return;
       }
-      console.log(data);
-      const response = await axios.patch(
-        `http://localhost:8000/api/v1/tweets/${tweetId}`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      console.log(response);
+      editTweet(data.content, tweetId);
       setRerender(true);
       toast({
         variant: "success",
@@ -86,7 +76,7 @@ const EditTweet: React.FC<EditTweetProps> = ({
   useEffect(() => {}, [setRerender]);
 
   return (
-    <Dialog >
+    <Dialog>
       <DialogTrigger className="flex w-full items-center justify-between">
         <h2>Edit</h2>
         <Pencil size={15} />
@@ -97,7 +87,7 @@ const EditTweet: React.FC<EditTweetProps> = ({
           <DialogDescription>
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(editTweet)}
+                onSubmit={form.handleSubmit(editTweetHandler)}
                 className="w-full space-y-6 p-2 relative"
               >
                 <FormField

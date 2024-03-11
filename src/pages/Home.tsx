@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Layout from "@/components/Layout/pages-layout";
-import axios from "axios";
 import VideoCard from "@/components/video/video-card";
 import Loading from "@/components/loading";
+import { getVideos } from "@/services/videos.service.ts";
 
 interface VideoOwner {
   username: string;
@@ -29,7 +29,7 @@ interface Video {
 const Home = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [fetchMoreVideos , setFetchMoreVideos] = useState<boolean>(false);
+  const [fetchMoreVideos, setFetchMoreVideos] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -37,17 +37,10 @@ const Home = () => {
   const lastVideoRef = useRef<HTMLDivElement | null>(null);
 
   const fetchVideos = async () => {
+    if (!hasMore) return; // No need to fetch more if there are no more videos
     setFetchMoreVideos(true);
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/videos?page=${page}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      const newVideos = response.data.data.videos;
+      const newVideos = await getVideos(page);
       setVideos((prevVideos) => [...prevVideos, ...newVideos]);
       setPage((prevPage) => prevPage + 1);
       setHasMore(newVideos.length > 0);
@@ -87,14 +80,14 @@ const Home = () => {
     };
   }, [hasMore, loading]);
 
-  if(loading) {
-    return <Loading />
+  if (loading && videos.length === 0) {
+    return <Loading />;
   }
 
   return (
     <Layout>
       {error && <p>{error}</p>}
-      {!loading && !error && Array.isArray(videos) && videos.length > 0 && (
+      {videos.length > 0 && (
         <>
           <div className="grid grid-cols-3 gap-4 p-4">
             {videos.map((video, index) => (

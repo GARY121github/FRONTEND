@@ -3,7 +3,7 @@ import axios from "axios";
 const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 // login service
-export const loginService = async (
+export const loginUser = async (
   username: string,
   password: string,
   email: string
@@ -33,7 +33,7 @@ interface RegisterUserData {
   avatar?: File;
   coverImage?: File;
 }
-export const registerUserService = async (values: RegisterUserData) => {
+export const registerUser = async (values: RegisterUserData) => {
   try {
     const formData = new FormData();
     formData.append("username", values.username);
@@ -48,5 +48,33 @@ export const registerUserService = async (values: RegisterUserData) => {
     return response.data.data;
   } catch (error) {
     throw new Error("Failed to register user");
+  }
+};
+
+// logout service
+export const logoutUser = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}/users/logout`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    throw new Error("Failed to logout user");
+  }
+};
+
+// get users channel service
+export const getUsersChannel = async (username: string) => {
+  try {
+    const response = await axios.get(`${baseUrl}/users/c/${username}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    throw new Error("Failed to fetch channel details");
   }
 };

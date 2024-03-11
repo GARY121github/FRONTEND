@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { Link } from "react-router-dom";
 import Empty from "../empty";
 import { Folder } from "lucide-react";
 import Loading from "../loading";
+import { getChannelPlaylist } from "@/services/playlist.service.ts";
 
 interface Playlist {
   createdAt: string; // Date and time when the collection was created
@@ -23,37 +22,14 @@ interface ChannelPlaylistProps {
 }
 
 const ChannelPlaylist: React.FC<ChannelPlaylistProps> = ({ channelId }) => {
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [playlists, setPlaylists] = useState<Array<Playlist>>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const { toast } = useToast();
 
   const fetchPlaylists = async () => {
     try {
-      const storedAccessToken = localStorage.getItem("accessToken");
-      if (!storedAccessToken) {
-        // If there's no stored access token, show a toast message and navigate to the login page
-        toast({
-          variant: "destructive",
-          title: "Unauthorized",
-          description: "You need to log in first to access this page.",
-        });
-        navigate("/login");
-        return;
-      }
-
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/playlist/user/${channelId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${storedAccessToken}`,
-          },
-        }
-      );
-
-      // Update state with fetched playlists
-      console.log(response);
-      setPlaylists(response.data.data);
+      setLoading(true);
+      const response = await getChannelPlaylist(channelId);
+      setPlaylists(response);
       setLoading(false);
     } catch (error) {
       // Handle errors gracefully
@@ -84,7 +60,7 @@ const ChannelPlaylist: React.FC<ChannelPlaylistProps> = ({ channelId }) => {
       ) : (
         <div className="grid grid-cols-2 gap-4 p-1">
           {playlists.map((playlist) => (
-            <div className="w-full cursor-pointer">
+            <div className="w-full cursor-pointer" key={playlist._id}>
               <Link to={`playlist/${playlist._id}`}>
                 <div className="relative mb-2 w-full pt-[56%]">
                   <div className="absolute inset-0">

@@ -1,32 +1,35 @@
-import React from "react";
 import useAuth from "@/hooks/useAuth";
 import { LogOut } from "lucide-react";
-import axios from "axios";
+import { logoutUser } from "@/services/user.service.ts";
+import { useToast } from "./ui/use-toast";
 
 const Logout = () => {
   const { logout } = useAuth();
-
-  const logoutUser = async () => {
-    const storedAccessToken = localStorage.getItem("accessToken");
-    console.log(localStorage);
-    console.log("access Token", storedAccessToken);
-    if (!storedAccessToken) {
-      console.log("YOU NEED TO LOGIN FIRST");
-      return;
+  const { toast } = useToast();
+  const logoutUserHandler = async () => {
+    try {
+      await logoutUser();
+      localStorage.removeItem("accessToken");
+      logout();
+      toast({
+        variant: "success",
+        title: "Logged out successfully",
+        description: "You have been logged out",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to logout",
+      });
     }
-    const response = await axios.get("http://localhost:8000/api/v1/users/logout", {
-      headers: {
-        Authorization: `Bearer ${storedAccessToken}`,
-      },
-    });
-
-    localStorage.removeItem("accessToken");
-    console.log(response);
-    logout();
   };
 
   return (
-    <div onClick={logoutUser} className="flex justify-between cursor-pointer w-full">
+    <div
+      onClick={logoutUserHandler}
+      className="flex justify-between cursor-pointer w-full"
+    >
       Logout <LogOut />
     </div>
   );

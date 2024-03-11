@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { loginService } from "@/services/user.service.ts";
+import { loginUser } from "@/services/user.service.ts";
 
 // username, email, password
 const formSchema = z.object({
@@ -48,7 +48,7 @@ function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setLoading(true);
-      const response = await loginService(
+      const response = await loginUser(
         values.username,
         values.password,
         values.email
@@ -62,6 +62,7 @@ function LoginForm() {
       toast({
         title: "Login Successfully",
         description: response.message,
+        variant: "success"
       });
       setLoading(false);
       navigator("/");

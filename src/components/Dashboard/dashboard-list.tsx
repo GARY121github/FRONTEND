@@ -4,7 +4,7 @@ import ChannelAvatar from "@/components/Channel/channel-avatar";
 import { Button } from "../ui/button";
 import { Trash2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import axios from "axios";
+import Loading from "../loading";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,8 +15,12 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import VideoEditModal from "../Modals/video-edit-modal";
+import {
+  togglePublishingOfVideo,
+  deleteVideo,
+} from "@/services/videos.service.ts";
 
-interface Video {
+interface VideoProps {
   setRefresh: (value: boolean) => void;
   _id: string;
   title: string;
@@ -27,7 +31,7 @@ interface Video {
   isPublished: boolean;
 }
 
-const DashBoardList: React.FC<Video> = ({
+const DashBoardList: React.FC<VideoProps> = ({
   setRefresh,
   _id,
   title,
@@ -37,41 +41,34 @@ const DashBoardList: React.FC<Video> = ({
   createdAt,
   isPublished,
 }) => {
-  const [published, setPublished] = useState(isPublished);
+  const [published, setPublished] = useState<boolean>(isPublished);
   const { toast } = useToast();
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const year = date.getFullYear();
-    return `${month}/${day}/${year}`;
+    const formattedDate = date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    });
+    return formattedDate;
   };
 
   const togglePublishedVideo = async () => {
     try {
-      await axios.patch(
-        `http://localhost:8000/api/v1/videos/toggle/publish/${_id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
       setPublished((prev) => !prev);
+      await togglePublishingOfVideo(_id);
     } catch (error) {
       console.error("Error toggling published video:", error);
+      setPublished((prev) => !prev); // Revert the state if an error occurs
     }
   };
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8000/api/v1/videos/${_id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+      setLoading(true);
+      await deleteVideo(_id);
       setRefresh(true);
       toast({
         title: "Video Deleted",
@@ -85,13 +82,12 @@ const DashBoardList: React.FC<Video> = ({
         variant: "destructive",
       });
       console.error("Error deleting video:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // const handleEdit = () => {
-  //   //TODO
-  // };
-
+  if(loading) return <Loading />
   return (
     <div className="border-b-2 border-dotted">
       <div className="grid grid-cols-10 gap-4 p-2 items-center">

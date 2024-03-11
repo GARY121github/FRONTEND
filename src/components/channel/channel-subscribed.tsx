@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "../ui/button";
 import ChannelAvatar from "./channel-avatar";
@@ -16,6 +14,10 @@ import {
 import Empty from "../empty";
 import { Ghost } from "lucide-react";
 import Loading from "../loading";
+import {
+  getSubscribedChannels,
+  toggleSubscription,
+} from "@/services/subscription.service.ts";
 
 interface SubscribedChannel {
   _id: string;
@@ -39,93 +41,61 @@ const SubscribedChannels: React.FC<SubscribedChannelsProps> = ({
 }) => {
   const [channels, setChannels] = useState<SubscribedChannelWithUsername[]>([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const { toast } = useToast();
 
-  const fetchSubscribedChannels = async () => {
+  const fetchSubscribedChannels = useCallback(async () => {
     try {
-      const storedAccessToken = localStorage.getItem("accessToken");
-      if (!storedAccessToken) {
-        // If there's no stored access token, show a toast message and navigate to the login page
-        toast({
-          variant: "destructive",
-          title: "Unauthorized",
-          description: "You need to log in first to access this page.",
-        });
-        navigate("/login");
-        return;
-      }
-
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/subscriptions/c/${channelId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${storedAccessToken}`,
-          },
-        }
-      );
-
-      // Update state with fetched subscribed channels
-      console.log(response);
-      setChannels(response.data.data);
-      setLoading(false);
+      setLoading(true);
+      const response = await getSubscribedChannels(channelId);
+      setChannels(response);
     } catch (error) {
-      // Handle errors gracefully
       console.error("Error fetching subscribed channels:", error);
-      // You might want to show a toast message here as well
+      toast({
+        title: "Error",
+        description: "Failed to fetch subscribed channels.",
+        duration: 5000,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [channelId, toast]);
 
-  const toggelSubscription = useCallback(
-    async (channel: string) => {
+  const toggleSubscriptionHandler = useCallback(
+    async (channelId: string) => {
       try {
-        const storedAccessToken = localStorage.getItem("accessToken");
-        if (!storedAccessToken) {
-          toast({
-            variant: "destructive",
-            title: "Unauthorized",
-            description: "You need to login first to access this page.",
-          });
-          navigate("/login");
-          return;
-        }
-
-        await axios.post(
-          `http://localhost:8000/api/v1/subscriptions/c/${channel}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${storedAccessToken}`,
-            },
-          }
-        );
+        await toggleSubscription(channelId);
         fetchSubscribedChannels();
       } catch (error) {
-        console.log(error);
+        console.error("Error toggling subscription:", error);
+        toast({
+          title: "Error",
+          description: "Failed to toggle subscription.",
+          duration: 5000,
+          variant: "destructive",
+        });
       }
     },
-    [toast, navigate]
+    [fetchSubscribedChannels, toast]
   );
 
   useEffect(() => {
     fetchSubscribedChannels();
-  }, [channelId]); // Trigger the effect when channelId changes
+  }, [fetchSubscribedChannels]);
 
   return (
     <>
       {loading ? (
-        // Render loading state if data is being fetched
         <Loading />
       ) : channels.length === 0 ? (
-        // Render message when no subscribed channels available
         <Empty
           className="w-full my-auto min-h-96"
-          icon={<Ghost className="bg-sky-700  p-2 rounded-full" size={50} />}
-          title={"No subscribed channels available"}
-          description={"You have not subscribed to any channels yet."}
+          icon={<Ghost className="bg-sky-700 p-2 rounded-full" size={50} />}
+          title="No subscribed channels available"
+          description="You have not subscribed to any channels yet."
         />
       ) : (
-        <div className="p-2 ">
+        <div className="p-2">
           <ul className="flex flex-col gap-2">
             {channels.map((channel) => (
               <li key={channel._id} className="bg-slate-300">
@@ -149,11 +119,10 @@ const SubscribedChannels: React.FC<SubscribedChannelsProps> = ({
                           Unsubscribe from @{channel.username}?
                         </AlertDialogTitle>
                       </AlertDialogHeader>
-
                       <AlertDialogCancel>cancel</AlertDialogCancel>
                       <AlertDialogAction
                         className="ml-2"
-                        onClick={() => toggelSubscription(channel._id)}
+                        onClick={() => toggleSubscriptionHandler(channel._id)}
                       >
                         unsubscribe
                       </AlertDialogAction>

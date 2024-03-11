@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,6 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
+import { saveVideoIntoPlaylist } from "@/services/playlist.service";
 
 interface AddToPlayListPopUpProps {
   PlaylistName: string;
@@ -27,15 +27,7 @@ const AddToPlayListPopUp: React.FC<AddToPlayListPopUpProps> = ({
 
   const addToPlaylist = async () => {
     try {
-      await axios.put(
-        `http://localhost:8000/api/v1/playlist/add/${videoId}/${playlistId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      await saveVideoIntoPlaylist(videoId, playlistId);
       toast({
         variant: "success",
         title: "Video added",
