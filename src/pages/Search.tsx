@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout/pages-layout";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import VideoList from "@/components/video/video-list";
 import ChannelList from "@/components/Channel/channel-list";
 import { searchingChannel, searchingVideos } from "@/services/search.service";
