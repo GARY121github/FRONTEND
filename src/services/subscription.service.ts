@@ -36,16 +36,13 @@ export const getSubscribedChannels = async (channelId: string) => {
   }
 };
 
-export const fetchingSubscribers = async () => {
+export const fetchingSubscribers = async (userId: string) => {
   try {
-    const response = await axios.get(
-      `${baseUrl}/subscriptions/u/${user?._id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
+    const response = await axios.get(`${baseUrl}/subscriptions/u/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     return response.data.data;
   } catch (error) {
     throw new Error("Error fetching subscribers: " + error);

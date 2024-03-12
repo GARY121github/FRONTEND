@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:8000/api/v1";
+const baseUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const searchingChannel = async (search: string | undefined) => {
   try {
@@ -17,14 +17,11 @@ export const searchingChannel = async (search: string | undefined) => {
 
 export const searchingVideos = async (search: string | undefined) => {
   try {
-    const response = await axios.get(
-      `http://localhost:8000/api/v1/videos?query=${search}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
+    const response = await axios.get(`${baseUrl}/videos?query=${search}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
     return response.data.data;
   } catch (error) {
     throw new Error("Error while fetching the video -> " + error);

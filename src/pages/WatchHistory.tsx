@@ -33,6 +33,7 @@ const WatchHistory = () => {
     try {
       setLoading(true);
       const response = await fetchingHistory();
+      console.log(response);
       setVideos(response);
       setLoading(false);
     } catch (error) {

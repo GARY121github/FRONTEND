@@ -4,7 +4,6 @@ import {
   ThumbsUp,
   History,
   Video,
-  FolderClosed,
   UserRoundCheck,
   Settings,
   HelpCircle,
@@ -43,11 +42,6 @@ const SideBar: React.FC<SideBarProps> = ({ className }) => {
       title: "My Content",
       logo: <Video />,
       navigation: `/@${user?.username}`,
-    },
-    {
-      title: "Collections",
-      logo: <FolderClosed />,
-      navigation: "/collections",
     },
     {
       title: "Subscribers",

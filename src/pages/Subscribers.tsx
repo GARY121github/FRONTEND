@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout/pages-layout";
 import useAuth from "@/hooks/useAuth";
-import axios from "axios";
 import ChannelList from "@/components/Channel/channel-list";
 import Loading from "@/components/loading";
 import { fetchingSubscribers } from "@/services/subscription.service";
@@ -26,7 +25,7 @@ const Subscribers = () => {
   const fetchSubscribers = async () => {
     setLoading(true);
     try {
-      const response = await fetchingSubscribers();
+      const response = await fetchingSubscribers(user!._id);
       setData(response);
     } catch (error) {
       console.error("Error fetching subscribers:", error);
