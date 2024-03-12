@@ -46,7 +46,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
     const timeDifference = calculateTimeDifference(new Date(createdAt));
 
     return (
-      <div ref={ref} className="flex flex-col gap-1 w-96">
+      <div ref={ref} className="flex flex-col gap-1 2xl:w-96 ">
         <div className="relative">
           <Link
             to={`/video/${_id}`}
@@ -103,16 +103,16 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
                 },
               }}
             >
-              <h3 className="text-white text-xl font-semibold line-clamp-1">
+              <h3 className="text-white text-base md:text-xl font-semibold line-clamp-1">
                 {title}
               </h3>
             </Link>
             <Link to={`/@${owner?.username}`}>
-              <p className="text-slate-200 hover:text-slate-400">
+              <p className="text-slate-200 text:sm md:text-base hover:text-slate-400">
                 {owner?.fullName}
               </p>
             </Link>
-            <p className="text-white text-sm">
+            <p className="text-white text-xs md:text-sm">
               {views} views | {timeDifference}
             </p>
           </div>

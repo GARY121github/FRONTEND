@@ -22,6 +22,7 @@ import {
   Settings,
   Support,
 } from "@/pages/index";
+import LandingPage from "./pages/LandingPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
             <Home />
           </AuthLayout>
         ),
+      },
+      {
+        path: "/landingpage",
+        element: <LandingPage />,
       },
       {
         path: "/login",

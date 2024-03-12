@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import { togglingLike, videoLikes } from "@/services/like.service";
 
 interface likeProps {
   likeOf: string;
@@ -14,16 +14,9 @@ const Like: React.FC<likeProps> = ({ likeOf, id }) => {
 
   const getVideoLikes = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/likes/video/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setLike(response.data.data.totalLikes);
-      setIsLiked(response.data.data.isLikedByUser);
+      const response = await videoLikes(id);
+      setLike(response.totalLikes);
+      setIsLiked(response.isLikedByUser);
     } catch (error) {
       console.log(error);
     }
@@ -31,17 +24,13 @@ const Like: React.FC<likeProps> = ({ likeOf, id }) => {
 
   const toggleLike = async () => {
     try {
-      await axios.post(
-        `http://localhost:8000/api/v1/likes/toggle/v/${id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      isLiked ? setLike((like) => like - 1) : setLike((like) => like + 1);
+      setIsLiked((isLiked) => !isLiked);
+      await togglingLike(id);
       getVideoLikes();
     } catch (error) {
+      isLiked ? setLike((like) => like + 1) : setLike((like) => like - 1);
+      setIsLiked((isLiked) => !isLiked);
       console.log(error);
     }
   };
