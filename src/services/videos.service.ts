@@ -79,3 +79,39 @@ export const editVideo = async (
     throw new Error("Error updating video: " + error);
   }
 };
+
+
+export const uploadVideo = async (
+  videoFile: File,
+  thumbnail: File,
+  title: string,
+  description: string
+) => {
+  try {
+    const data = new FormData();
+    data.append("videoFile", videoFile);
+    data.append("thumbnail", thumbnail);
+    data.append("title", title);
+    data.append("description", description);
+    await axios.post(`${baseUrl}/videos`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+  } catch (error) {
+    throw new Error("Error uploading video: " + error);
+  }
+};
+
+export const incrementViewCount = async (videoId: string) => {
+  try {
+    await axios.get(`${baseUrl}/videos/${videoId}/view`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+  } catch (error) {
+    throw new Error("Error increasing view count: " + error);
+  }
+};

@@ -81,7 +81,11 @@ const Home = () => {
   }, [hasMore, loading]);
 
   if (loading && videos.length === 0) {
-    return <Loading />;
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
   }
 
   return (

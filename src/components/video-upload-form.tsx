@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Upload } from "lucide-react";
 import { useToast } from "./ui/use-toast";
+import { uploadVideo } from "@/services/videos.service";
 
 const MAX_VIDEO_FILE_SIZE = 500000000; // 50MB
 const MAX_THUMBNAIL_FILE_SIZE = 500000000; // 5MB
@@ -110,20 +111,11 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
       console.log("video uploading started");
       setStartUpload(true);
       setVideoFile(values.videoFile);
-      const response = await axios.post(
-        "http://localhost:8000/api/v1/videos",
-        {
-          title: values.title,
-          description: values.description,
-          videoFile: values.videoFile,
-          thumbnail: values.thumbnail,
-        },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
+      await uploadVideo(
+        values.videoFile,
+        values.thumbnail,
+        values.title,
+        values.description
       );
       setRefreshList && setRefreshList(true);
       setStartUpload(false);
@@ -133,7 +125,6 @@ const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
         description: "Video Uploaded Successfully!",
         variant: "success",
       });
-      console.log(response);
     } catch (error) {
       setStartUpload(false);
       toast({
