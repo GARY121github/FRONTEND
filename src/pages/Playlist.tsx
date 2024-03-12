@@ -10,6 +10,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { fetchingPlaylist } from "@/services/playlist.service";
 
 interface Owner {
   username: string;
@@ -50,16 +51,9 @@ const Playlist = () => {
   const [Videos, setVideos] = useState<Array<Video>>();
   const fetchPlaylist = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/playlist/${playlist}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setPlaylist(response.data.data);
-      setVideos(response.data.data.videos);
+      const response = await fetchingPlaylist(playlist);
+      setPlaylist(response);
+      setVideos(response.videos);
     } catch (error) {
       console.log(error);
     }

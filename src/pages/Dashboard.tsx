@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout/pages-layout";
 import useAuth from "@/hooks/useAuth";
@@ -7,6 +6,7 @@ import DashBoardCard from "@/components/Dashboard/dashboard-card";
 import { Eye, UserRound, Heart } from "lucide-react";
 import DashBoardVideoStats from "@/components/Dashboard/dashboard-video-stats";
 import Loading from "@/components/loading";
+import { fetchingDashboard } from "@/services/dashboard.service";
 
 interface Stats {
   totalLikes: number;
@@ -23,15 +23,8 @@ const Dashboard: React.FC = () => {
   const fetchDashboard = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/dashboard/stats",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setStats(response.data.data.stats);
+      const response = await fetchingDashboard();
+      setStats(response.stats);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);

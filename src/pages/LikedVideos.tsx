@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Layout from "@/components/Layout/pages-layout";
-import axios from "axios";
 import VideoList from "@/components/video/video-list";
 import Loading from "@/components/loading";
+import { fetchingLikedVideos } from "@/services/videos.service";
 
 interface videoOwner {
   username: string;
@@ -33,15 +33,8 @@ const LikedVideos = () => {
   const fetchLikedVideos = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/likes/videos",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setVideos(response.data.data);
+      const response = await fetchingLikedVideos();
+      setVideos(response);
       setLoading(false);
     } catch (error) {
       setLoading(false);

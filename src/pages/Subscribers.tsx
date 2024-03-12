@@ -4,6 +4,7 @@ import useAuth from "@/hooks/useAuth";
 import axios from "axios";
 import ChannelList from "@/components/Channel/channel-list";
 import Loading from "@/components/loading";
+import { fetchingSubscribers } from "@/services/subscription.service";
 
 interface User {
   avatar: string;
@@ -25,15 +26,8 @@ const Subscribers = () => {
   const fetchSubscribers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/subscriptions/u/${user?._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setData(response.data.data);
+      const response = await fetchingSubscribers();
+      setData(response);
     } catch (error) {
       console.error("Error fetching subscribers:", error);
     } finally {

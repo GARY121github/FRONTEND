@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import VideoList from "@/components/video/video-list";
 import ChannelList from "@/components/Channel/channel-list";
+import { searchingChannel, searchingVideos } from "@/services/search.service";
 
 interface videoOwner {
   username: string;
@@ -46,15 +47,8 @@ const Search = () => {
 
   const searchChannel = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/users/c/${search}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setChannel(response.data.data);
+      const response = await searchingChannel(search);
+      setChannel(response);
     } catch (error) {
       setChannel(null);
     }
@@ -63,15 +57,8 @@ const Search = () => {
   const searchVideos = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/videos?query=${search}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setVideos(response.data.data.videos);
+      const response = await searchingVideos(search);
+      setVideos(response.videos);
       setLoading(false);
     } catch (error) {
       console.log("Error while fetching the video -> ", error);

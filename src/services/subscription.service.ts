@@ -35,3 +35,19 @@ export const getSubscribedChannels = async (channelId: string) => {
     throw new Error("Error fetching subscribed channels: " + error);
   }
 };
+
+export const fetchingSubscribers = async () => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}/subscriptions/u/${user?._id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+    return response.data.data;
+  } catch (error) {
+    throw new Error("Error fetching subscribers: " + error);
+  }
+};

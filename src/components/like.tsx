@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ThumbsUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { togglingLike, videoLikes } from "@/services/like.service";
+import { togglingVideoLike, videoLikes } from "@/services/like.service";
 
 interface likeProps {
   likeOf: string;
@@ -26,7 +26,7 @@ const Like: React.FC<likeProps> = ({ likeOf, id }) => {
     try {
       isLiked ? setLike((like) => like - 1) : setLike((like) => like + 1);
       setIsLiked((isLiked) => !isLiked);
-      await togglingLike(id);
+      await togglingVideoLike(id);
       getVideoLikes();
     } catch (error) {
       isLiked ? setLike((like) => like + 1) : setLike((like) => like - 1);

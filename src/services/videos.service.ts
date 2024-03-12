@@ -115,3 +115,29 @@ export const incrementViewCount = async (videoId: string) => {
     throw new Error("Error increasing view count: " + error);
   }
 };
+
+export const fetchingLikedVideos = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}/likes/videos`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    throw new Error("Error fetching liked videos: " + error);
+  }
+};
+
+export const fetchingHistory = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}/users/history`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    throw new Error("Error fetching history: " + error);
+  }
+};

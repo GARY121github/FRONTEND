@@ -57,3 +57,16 @@ export const saveVideoIntoPlaylist = async (
     throw new Error("Error saving video into playlist: " + error);
   }
 };
+
+export const fetchingPlaylist = async (playlist: string | undefined) => {
+  try {
+    const response = await axios.get(`${baseUrl}/playlist/${playlist}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    throw new Error("Error fetching playlist: " + error);
+  }
+};

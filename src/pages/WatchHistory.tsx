@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/Layout/pages-layout";
-import axios from "axios";
 import VideoList from "@/components/video/video-list";
 import Loading from "@/components/loading";
+import { fetchingHistory } from "@/services/videos.service";
 interface videoOwner {
   username: string;
   fullName: string;
@@ -29,18 +29,11 @@ const WatchHistory = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchLikedVideos = async () => {
+  const fetchHistory = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        "http://localhost:8000/api/v1/users/history",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setVideos(response.data.data);
+      const response = await fetchingHistory();
+      setVideos(response);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -49,7 +42,7 @@ const WatchHistory = () => {
   };
 
   useEffect(() => {
-    fetchLikedVideos();
+    fetchHistory();
   }, []);
   return (
     <Layout>

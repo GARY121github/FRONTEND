@@ -14,11 +14,13 @@ import SaveIntoPlaylist from "@/components/Playlist/save-into-playlist";
 import ChannelDetails from "@/components/Channel/channel-details";
 import useAuth from "@/hooks/useAuth";
 import { incrementViewCount } from "@/services/videos.service";
+// import VideoComments from "./video-comments";
 
 const VideoDetails = () => {
   const { video } = useLocation().state;
   const [timeDifference, setTimeDifference] = useState<string>("");
   const { user } = useAuth();
+  const [showMore, setShowMore] = useState(false);
 
   const increaseViewCount = async () => {
     try {
@@ -59,11 +61,20 @@ const VideoDetails = () => {
           <CardContent className="flex justify-between items-center">
             <ChannelDetails channelName={video.owner.username} />
           </CardContent>
-          <CardFooter>
-            <p className="text-white">{video.description}</p>
+          <CardFooter className="flex flex-col gap-1">
+            <p className={`text-white ${showMore ? "" : "line-clamp-2"}`}>
+              {video.description}
+            </p>
+            <button
+              onClick={() => setShowMore(!showMore)}
+              className="text-blue-500 self-start"
+            >
+              {showMore ? "Show less" : "Show more"}
+            </button>
           </CardFooter>
         </Card>
       </section>
+      {/* <section><VideoComments videoId={video._id} /></section> */}
     </div>
   );
 };
