@@ -30,7 +30,11 @@ const Tweet: React.FC<TweetProps> = ({
   const { user } = useAuth();
 
   const timeAgo = useMemo(() => {
-    const seconds = Math.floor((new Date() - new Date(time)) / 1000);
+    const tweetTime = new Date(time);
+    const currentTime = new Date();
+    const seconds = Math.floor(
+      (currentTime.getTime() - tweetTime.getTime()) / 1000
+    );
 
     let interval = Math.floor(seconds / 31536000);
 

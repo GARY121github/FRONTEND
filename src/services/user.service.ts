@@ -33,6 +33,7 @@ interface RegisterUserData {
   avatar?: File;
   coverImage?: File;
 }
+
 export const registerUser = async (values: RegisterUserData) => {
   try {
     const formData = new FormData();

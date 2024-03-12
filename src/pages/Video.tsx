@@ -1,4 +1,3 @@
-import React from "react";
 import Layout from "@/components/Layout/pages-layout";
 import VideoPlayer from "@/components/video/video-detail";
 
