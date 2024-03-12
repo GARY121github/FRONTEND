@@ -1,6 +1,4 @@
 import React, { useEffect, useMemo } from "react";
-import EditTweet from "./edit-tweet";
-import DeleteTweet from "./delete-tweet";
 import { MoreVertical } from "lucide-react";
 import {
   DropdownMenu,
@@ -9,23 +7,39 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useAuth from "@/hooks/useAuth";
-import LikeTweet from "./like-tweet";
+import EditComment from "./edit-comment";
+import DeleteComment from "./delete-comment";
 
-interface TweetProps {
-  tweetId: string;
+interface Owner {
+  _id: string;
+  avatar: string;
+  fullName: string;
+  username: string;
+}
+
+interface Comment {
+  _id: string;
+  content: string;
+  createdAt: string; // Assuming you'll parse this into a Date object later
+  updatedAt: string; // Assuming you'll parse this into a Date object later
+  owner: Owner;
+}
+
+interface CommentProps {
+  commentId: string;
   text: string;
   fullName: string;
   time: string;
-  channelId: string;
+  videoId: string;
   setRerender: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Tweet: React.FC<TweetProps> = ({
-  tweetId,
+const Comment: React.FC<CommentProps> = ({
+  commentId,
   text,
   fullName,
   setRerender,
-  channelId,
+  videoId,
   time,
 }) => {
   const { user } = useAuth();
@@ -65,9 +79,9 @@ const Tweet: React.FC<TweetProps> = ({
         <div className="flex gap-4 items-center">
           <h3 className="text-md font-bold">{fullName}</h3>
           <p className="text-sm">{timeAgo}</p>
-          {user?._id === channelId && (
-            <TweetDropdownMenu
-              tweetId={tweetId}
+          {user?._id === videoId && (
+            <CommentDropdownMenu
+              commentId={commentId}
               text={text}
               setRerender={setRerender}
             />
@@ -75,26 +89,30 @@ const Tweet: React.FC<TweetProps> = ({
         </div>
         <h4 className="text-lg">{text}</h4>
       </div>
-      <LikeTweet likeOf="tweet" tweetId={tweetId} />
+      {/* <LikeComment likeOf="comment" commentId={commentId} /> */}
     </div>
   );
 };
 
-const TweetDropdownMenu: React.FC<{
-  tweetId: string;
+const CommentDropdownMenu: React.FC<{
+  commentId: string;
   text: string;
   setRerender: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ tweetId, text, setRerender }) => (
+}> = ({ commentId, text, setRerender }) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
       <MoreVertical size={20} className="cursor-pointer" />
     </DropdownMenuTrigger>
     <DropdownMenuContent className="min-w-24 p-2">
-      <EditTweet tweetId={tweetId} text={text} setRerender={setRerender} />
+      <EditComment
+        commentId={commentId}
+        text={text}
+        setRerender={setRerender}
+      />
       <DropdownMenuSeparator />
-      <DeleteTweet tweetId={tweetId} setRerender={setRerender} />
+      <DeleteComment commentId={commentId} setRerender={setRerender} />
     </DropdownMenuContent>
   </DropdownMenu>
 );
 
-export default Tweet;
+export default Comment;
