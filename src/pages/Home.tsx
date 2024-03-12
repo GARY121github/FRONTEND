@@ -93,7 +93,7 @@ const Home = () => {
       {error && <p>{error}</p>}
       {videos.length > 0 && (
         <>
-          <div className="grid grid-cols-3 gap-4 p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 sm:gap-4 sm:p-4">
             {videos.map((video, index) => (
               <VideoCard
                 key={video._id}

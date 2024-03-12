@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout/pages-layout";
 import VideoList from "@/components/video/video-list";
 import Loading from "@/components/loading";
