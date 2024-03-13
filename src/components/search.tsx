@@ -16,14 +16,14 @@ const SearchUser: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-around items-center border rounded-lg p-1">
+    <div className="flex justify-around items-center border-2 border-slate-700 rounded-lg p-1">
       <Input
-        className="border-none outline-none focus-visible:ring-0 shadow-none"
+        className="border-none outline-none focus-visible:ring-0 shadow-none text-blue-100"
         type="text"
-        placeholder="search"
+        placeholder="search..."
         ref={search}
       />
-      <Button className="bg-blue-300 hover:bg-blue-400" onClick={onSearch}>
+      <Button className="bg-[#0A1217] hover:bg-slate-700" onClick={onSearch}>
         <Search className="cursor-pointer" />
       </Button>
     </div>

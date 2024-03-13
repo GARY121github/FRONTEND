@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Layout from "@/components/Layout/pages-layout";
 import VideoList from "@/components/video/video-list";
 import ChannelAvatar from "@/components/Channel/channel-avatar";
-import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import {
   Tooltip,

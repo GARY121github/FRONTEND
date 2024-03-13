@@ -68,7 +68,7 @@ const SideBar: React.FC<SideBarProps> = ({ className }) => {
   ];
   return (
     <div
-      className={`flex flex-col w-full justify-between p-2 py-4 h-full ${className}`}
+      className={`flex flex-col w-full justify-between py-4 h-full ${className}`}
     >
       <section className="flex flex-col gap-2">
         {topElements.map(

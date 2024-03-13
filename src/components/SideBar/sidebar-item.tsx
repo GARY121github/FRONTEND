@@ -14,7 +14,7 @@ const SideBarItems: React.FC<SideBarItemsProps> = ({
 }: SideBarItemsProps) => {
   return (
     <Link to={navigation}>
-      <div className="flex justify-start gap-3 border p-2 hover:bg-slate-300 cursor-pointer">
+      <div className="flex justify-start gap-3 p-2 px-8 hover:bg-slate-500 cursor-pointer text-blue-100">
         {logo}
         {title}
       </div>

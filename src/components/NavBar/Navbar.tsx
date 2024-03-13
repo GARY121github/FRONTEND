@@ -26,21 +26,23 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
   useEffect(() => {}, [user, isAuthenticated]);
   return (
-    <header className={cn("sticky top-0 border-b-2 bg-white z-10", className)}>
-      <nav className="flex justify-between p-3">
-        <section className="basis-[25%] w-full  flex justify-start items-center">
-          <Button className="bg-inherit hover:bg-slate-200 shadow-none">
-            <AlignJustify className="text-black" />
+    <header
+      className={cn("sticky top-0 border-b-2 bg-[#0A1217] z-10", className)}
+    >
+      <nav className="flex justify-between p-3 items-center">
+        <section className="basis-[25%] w-full flex justify-start items-center">
+          <Button className="bg-inherit hover:bg-slate-700 shadow-none">
+            <AlignJustify className="text-blue-100" />
           </Button>
         </section>
         <section className="basis-[50%] mx-[15%] w-full">
           <Search />
         </section>
-        <section className="basis-[25%] w-full">
-          <Menubar className="flex justify-end border-none shadow-none">
+        <section className="basis-[25%]">
+          <Menubar className="bg-inherit justify-end border-none shadow-none">
             {isAuthenticated ? (
               <MenubarMenu>
-                <MenubarTrigger className="bg-inherit cursor-pointer rounded-full p-0">
+                <MenubarTrigger className="cursor-pointer rounded-full p-0 border">
                   <Avatar>
                     <AvatarImage
                       src={user?.avatar || "https://github.com/shadcn.png"}
@@ -48,15 +50,15 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </MenubarTrigger>
-                <MenubarContent>
+                <MenubarContent className="bg-[#0A1217] border-slate-700">
                   <Link to="/dashboard">
-                    <MenubarItem className="flex justify-between cursor-pointer">
+                    <MenubarItem className="flex justify-between cursor-pointer text-blue-100 focus:bg-inherit focus:opacity-60 focus:text-blue-100">
                       Profile <CircleUserRound />
                     </MenubarItem>
                   </Link>
 
-                  <MenubarSeparator />
-                  <MenubarItem>
+                  <MenubarSeparator className="bg-slate-700" />
+                  <MenubarItem className="flex justify-between cursor-pointer text-blue-100 w-full focus:bg-inherit focus:opacity-60 focus:text-blue-100">
                     <Logout />
                   </MenubarItem>
                 </MenubarContent>
@@ -64,12 +66,12 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
             ) : (
               <MenubarMenu>
                 <Link to="/login">
-                  <Button className="bg-inherit text-black shadow-none hover:bg-inherit hover:text-slate-600">
+                  <Button className="bg-inherit text-blue-100 shadow-none hover:bg-inherit hover:opacity-60">
                     Sign in
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button className="rounded-full bg-blue-400 hover:bg-blue-500">
+                  <Button className="rounded-full bg-slate-700 hover:opacity-70">
                     Get Started
                   </Button>
                 </Link>
