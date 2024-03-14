@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import Empty from "../empty";
-import AddTweet from "../Tweet/add-tweet";
-import Tweet from "../Tweet/tweet";
-import ChannelAvatar from "./channel-avatar";
-import useAuth from "@/hooks/useAuth";
+// import useAuth from "@/hooks/useAuth";
+import Comment from "../Comments/comment";
 import Loading from "../loading";
-import { getChannelTweet } from "@/services/tweet.service.ts";
+import { getVideoComments } from "@/services/comment.service.ts";
+import AddComment from "../Comments/add-comment";
+import ChannelAvatar from "../Channel/channel-avatar";
 
 interface Owner {
   _id: string;
@@ -15,7 +15,7 @@ interface Owner {
   username: string;
 }
 
-interface Tweet {
+interface CommentStruct {
   _id: string;
   content: string;
   createdAt: string; // Assuming you'll parse this into a Date object later
@@ -23,24 +23,24 @@ interface Tweet {
   owner: Owner;
 }
 
-interface ChannelTweetsProps {
-  channelId: string;
+interface VideoCommentsProps {
+  videoId: string;
 }
 
-const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
-  const [tweets, setTweets] = useState<Array<Tweet>>([]);
+const VideoComments: React.FC<VideoCommentsProps> = ({ videoId }) => {
+  const [comments, setComments] = useState<Array<CommentStruct>>([]);
   const [rerender, setRerender] = useState(false);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  //   const { user } = useAuth();
 
-  const fetchTweets = async () => {
+  const fetchComments = async () => {
     try {
       setLoading(true);
-      const response = await getChannelTweet(channelId);
-      setTweets(response);
-      // console.log(response);
+      const response = await getVideoComments(videoId);
+      setComments(response);
+      console.log(response);
     } catch (error) {
-      console.error("Error fetching tweets:", error);
+      console.error("Error fetching comments:", error);
       // Handle error gracefully
     } finally {
       setLoading(false);
@@ -48,31 +48,31 @@ const ChannelTweets: React.FC<ChannelTweetsProps> = ({ channelId }) => {
   };
 
   useEffect(() => {
-    fetchTweets();
+    fetchComments();
     setRerender(false);
   }, [rerender, setRerender]);
 
   return (
     <>
-      {user?._id === channelId && <AddTweet setRerender={setRerender} />}
+      {<AddComment videoId={videoId} setRerender={setRerender} />}
       {loading ? (
         <Loading />
-      ) : tweets.length === 0 ? (
+      ) : comments.length === 0 ? (
         <EmptyState />
       ) : (
         <div className="flex flex-col gap-2 p-2">
-          {tweets.map((tweet) => (
+          {comments.map((comment) => (
             <div
-              key={tweet._id}
+              key={comment._id}
               className="flex gap-3 bg-slate-300 p-2 rounded-xl"
             >
-              <ChannelAvatar avatar={tweet.owner.avatar} />
-              <Tweet
-                channelId={channelId}
-                tweetId={tweet._id}
-                text={tweet.content}
-                fullName={tweet.owner.fullName}
-                time={tweet.updatedAt}
+              <ChannelAvatar avatar={comment.owner.avatar} />
+              <Comment
+                videoId={videoId}
+                commentId={comment._id}
+                text={comment.content}
+                fullName={comment.owner.fullName}
+                time={comment.updatedAt}
                 setRerender={setRerender}
               />
             </div>
@@ -89,11 +89,11 @@ const EmptyState: React.FC = () => (
     icon={
       <MessageCircle className="bg-sky-700 pl-3 p-2 rounded-full" size={50} />
     }
-    title={"No Tweets Available"}
+    title={"No Comments Available"}
     description={
-      "There are no tweets available. Please try searching for something else."
+      "There are no comments available. Please try searching for something else."
     }
   />
 );
 
-export default ChannelTweets;
+export default VideoComments;
