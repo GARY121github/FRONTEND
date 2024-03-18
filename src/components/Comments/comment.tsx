@@ -9,6 +9,7 @@ import {
 import useAuth from "@/hooks/useAuth";
 import EditComment from "./edit-comment";
 import DeleteComment from "./delete-comment";
+import LikeComment from "./like-comment";
 
 interface Owner {
   _id: string;
@@ -79,17 +80,17 @@ const Comment: React.FC<CommentProps> = ({
         <div className="flex gap-4 items-center">
           <h3 className="text-md font-bold">{fullName}</h3>
           <p className="text-sm">{timeAgo}</p>
-          {user?._id === videoId && (
+          {
             <CommentDropdownMenu
               commentId={commentId}
               text={text}
               setRerender={setRerender}
             />
-          )}
+          }
         </div>
         <h4 className="text-lg">{text}</h4>
       </div>
-      {/* <LikeComment likeOf="comment" commentId={commentId} /> */}
+      <LikeComment likeOf="comment" commentId={commentId} />
     </div>
   );
 };

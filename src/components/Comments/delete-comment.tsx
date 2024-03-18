@@ -32,6 +32,11 @@ const DeleteComment: React.FC<DeleteCommentProps> = ({
         description: "Comment deleted successfully",
       });
     } catch (error) {
+       toast({
+         variant: "destructive",
+         title: "Deletion Failed",
+         description: "Comment Deletion Failed!",
+       });
       console.log(error);
     }
   };
