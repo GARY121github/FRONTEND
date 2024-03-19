@@ -38,7 +38,13 @@ build/
 # Tailwind CSS
 .tailwindcss-debug.log
 .tailwindcss-plugins.log
+tailwind.config.js
+postcss.config.js
 
+# Shadow CSS
+.shadcn/
+.shadcnrc
+.shadcn.lock
 
 # Customized for Vite + TypeScript + React + Tailwind CSS + Shadow CSS
 .cache/
