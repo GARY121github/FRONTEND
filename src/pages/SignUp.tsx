@@ -1,10 +1,11 @@
 import SignUpFrom from '@/components/signup-form';
 import { useNavigate } from 'react-router-dom';
+import AuthPageLayout from '@/components/Layout/auth-pages-layout';
 
 const SignUp = () => {
   const navigate = useNavigate()
   return (
-    <div className="flex flex-col gap-6 items-center justify-center h-screen">
+    <AuthPageLayout className={`h-full p-5`}>
       <h1 className="text-3xl font-semibold">SignUp</h1>
       <SignUpFrom />
       <div className="mt-4">
@@ -18,7 +19,7 @@ const SignUp = () => {
           </span>
         </p>
       </div>
-    </div>
+    </AuthPageLayout>
   )
 }
 
