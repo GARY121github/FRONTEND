@@ -24,6 +24,7 @@ const Protected: React.FC<ProtectedProps> = ({
         title: "Unauthorized",
         description: "You are already logged-in.",
       });
+      navigate("/");
     } else if (authentication && !isAuthenticated) {
       toast({
         variant: "destructive",
@@ -33,7 +34,7 @@ const Protected: React.FC<ProtectedProps> = ({
       navigate("/login");
     }
     setLoader(false);
-  }, []);
+  }, [isAuthenticated]);
 
   return loader ? <h1>loading...</h1> : <>{children}</>;
 };
