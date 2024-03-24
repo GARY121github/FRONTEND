@@ -64,8 +64,8 @@ function LoginForm() {
         description: response.message,
         variant: "success"
       });
-      setLoading(false);
       navigator("/");
+      setLoading(false);
     } catch (error) {
       console.error(error);
       setLoading(false);
