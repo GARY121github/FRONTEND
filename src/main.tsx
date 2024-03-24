@@ -24,6 +24,8 @@ import {
 } from "@/pages/index";
 import LandingPage from "./pages/LandingPage.tsx";
 import { PersistGate } from "redux-persist/integration/react";
+import TermsAndConditions from "./components/terms-and-conditions.tsx";
+import PrivacyPolicy from "./components/privacy-policy.tsx";
 
 const router = createBrowserRouter([
   {
@@ -145,6 +147,14 @@ const router = createBrowserRouter([
             <ChannelNotFound />
           </AuthLayout>
         ),
+      },
+      {
+        path: "/terms-and-conditions",
+        element: <TermsAndConditions contactEmail="vidsphere@gmail.com" />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicy contactEmail="vidsphere@gmail.com" />,
       },
     ],
   },

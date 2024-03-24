@@ -14,6 +14,7 @@ import SaveIntoPlaylist from "@/components/Playlist/save-into-playlist";
 import ChannelDetails from "@/components/Channel/channel-details";
 import useAuth from "@/hooks/useAuth";
 import VideoComments from "./video-comments";
+import { incrementViewCount } from "@/services/videos.service";
 
 const VideoDetails = () => {
   const { video } = useLocation().state;

@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import useAuth from "@/hooks/useAuth";
+// import useAuth from "@/hooks/useAuth";
 import EditComment from "./edit-comment";
 import DeleteComment from "./delete-comment";
 import LikeComment from "./like-comment";
@@ -40,10 +40,10 @@ const Comment: React.FC<CommentProps> = ({
   text,
   fullName,
   setRerender,
-  videoId,
+  // videoId,
   time,
 }) => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
 
   const timeAgo = useMemo(() => {
     const seconds = Math.floor((new Date() - new Date(time)) / 1000);

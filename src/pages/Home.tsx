@@ -3,6 +3,7 @@ import Layout from "@/components/Layout/pages-layout";
 import VideoCard from "@/components/video/video-card";
 import Loading from "@/components/loading";
 import { getVideos } from "@/services/videos.service.ts";
+import VideoEmpty from "@/components/video/video-empty";
 
 interface VideoOwner {
   username: string;
@@ -115,9 +116,7 @@ const Home = () => {
       )}
       {!fetchMoreVideos &&
         !error &&
-        (!Array.isArray(videos) || videos.length === 0) && (
-          <p>No videos found.</p>
-        )}
+        (!Array.isArray(videos) || videos.length === 0) && <VideoEmpty />}
     </Layout>
   );
 };
