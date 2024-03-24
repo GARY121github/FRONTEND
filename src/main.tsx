@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import { store } from "@/store/store.ts";
+import { persistor, store } from "@/store/store.ts";
 import { Provider } from "react-redux";
 import { Toaster } from "@/components/ui/toaster";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -23,6 +23,9 @@ import {
   Support,
 } from "@/pages/index";
 import LandingPage from "./pages/LandingPage.tsx";
+import { PersistGate } from "redux-persist/integration/react";
+import TermsAndConditions from "./components/terms-and-conditions.tsx";
+import PrivacyPolicy from "./components/privacy-policy.tsx";
 
 const router = createBrowserRouter([
   {
@@ -86,7 +89,6 @@ const router = createBrowserRouter([
         element: (
           <AuthLayout authentication={true}>
             <Video />
-            //{" "}
           </AuthLayout>
         ),
       },
@@ -146,13 +148,23 @@ const router = createBrowserRouter([
           </AuthLayout>
         ),
       },
+      {
+        path: "/terms-and-conditions",
+        element: <TermsAndConditions contactEmail="vidsphere@gmail.com" />,
+      },
+      {
+        path: "/privacy-policy",
+        element: <PrivacyPolicy contactEmail="vidsphere@gmail.com" />,
+      },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-    <RouterProvider router={router} />
-    <Toaster />
+    <PersistGate loading={null} persistor={persistor}>
+      <RouterProvider router={router} />
+      <Toaster />
+    </PersistGate>
   </Provider>
 );

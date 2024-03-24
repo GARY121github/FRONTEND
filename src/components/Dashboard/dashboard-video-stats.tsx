@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import DashBoardList from "./dashboard-list";
 import Loading from "../loading";
 import { getChannelsDashboardVideos } from "@/services/dashboard.service.ts";
+import Empty from "../empty";
+import VideoEmpty from "../video/video-empty";
 
 interface Video {
   _id: string;
@@ -36,12 +38,11 @@ const DashboardVideoStats: React.FC<DashboardVideoStatsProps> = ({
     try {
       setLoading(true);
       const response = await getChannelsDashboardVideos();
-      setVideos(response); 
+      setVideos(response);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching dashboard stats:", error);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -78,7 +79,9 @@ const DashboardVideoStats: React.FC<DashboardVideoStatsProps> = ({
           ))
         ) : (
           <div className="flex flex-col justify-center items-center h-72">
-            <h1 className="text-white text-2xl">No videos available</h1>
+            <h1 className="text-white text-2xl">
+              <VideoEmpty />
+            </h1>
           </div>
         )}
       </div>

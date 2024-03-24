@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Home,
   ThumbsUp,
@@ -17,6 +17,13 @@ interface SideBarProps {
 
 const SideBar: React.FC<SideBarProps> = ({ className }) => {
   const { user } = useAuth();
+  const location = window.location.pathname;
+
+  //TODO: What if location is not an item in the array? Like playing a video from the home page. Sidebar should still show the home page as active
+
+  useEffect(() => {
+    console.log(location);
+  }, [location]);
 
   const topElements: Array<{
     title: string;
@@ -68,7 +75,7 @@ const SideBar: React.FC<SideBarProps> = ({ className }) => {
   ];
   return (
     <div
-      className={`flex flex-col w-full justify-between p-2 py-4 h-full ${className}`}
+      className={`flex flex-col w-full justify-between py-4 h-full ${className}`}
     >
       <section className="flex flex-col gap-2">
         {topElements.map(
@@ -83,6 +90,9 @@ const SideBar: React.FC<SideBarProps> = ({ className }) => {
                 title={element.title}
                 logo={element.logo}
                 navigation={element.navigation}
+                className={`${
+                  location === element.navigation ? "bg-slate-500" : ""
+                }`}
               />
             );
           }
@@ -101,6 +111,9 @@ const SideBar: React.FC<SideBarProps> = ({ className }) => {
                 title={element.title}
                 logo={element.logo}
                 navigation={element.navigation}
+                className={`${
+                  location === element.navigation ? "bg-slate-500" : ""
+                }`}
               />
             );
           }

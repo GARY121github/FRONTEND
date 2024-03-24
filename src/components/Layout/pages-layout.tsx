@@ -11,13 +11,13 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children, className }) => {
   return (
     <Container className="min-h-screen">
-      <Navbar className="min-h-16 h-[10%]" />
+      <Navbar className="min-h-16 h-[10%] border-b border-slate-700" />
       <div className="grid grid-cols-12 h-[90%]">
-        <section className="col-span-2 h-full bg-slate-400 border-r-2 hidden lg:flex overflow-y-auto">
-          <Sidebar className="hidden lg:flex" />
+        <section className="col-span-2 h-full bg-[#0E1217] hidden lg:flex overflow-y-auto">
+          <Sidebar className="hidden lg:flex border-r border-slate-700" />
         </section>
         <section
-          className={`bg-slate-600 col-span-12 lg:col-span-10 overflow-y-auto ${className}`}
+          className={`bg-gradient-to-b from-[#0E1217] via-[#0F1217] to-[#0E1217] col-span-12 lg:col-span-10 overflow-y-auto ${className}`}
         >
           {children}
         </section>
