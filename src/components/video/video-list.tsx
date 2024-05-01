@@ -29,6 +29,7 @@ interface VideoListProps {
   __v: number;
   _id: string;
   className?: string;
+  component?: string;
 }
 
 const VideoList: React.FC<VideoListProps> = ({
@@ -42,6 +43,7 @@ const VideoList: React.FC<VideoListProps> = ({
   views,
   _id,
   className = "",
+  component = "",
 }) => {
   const formattedDuration = secondsToTime(duration);
   const timeDifference = calculateTimeDifference(new Date(createdAt));
@@ -61,37 +63,93 @@ const VideoList: React.FC<VideoListProps> = ({
         },
       }}
     >
-      <div className={`grid grid-cols-3 gap-4 p-1 ${className}`}>
-        <div className="col-span-1 relative">
+      <div
+        className={`flex gap-4 p-1 w-full h-full ${className} ${
+          component !== "recommendation" ? "h-[14rem]" : "h-[8rem]"
+        }`}
+      >
+        <div
+          className={`relative w-full h-full ${
+            component !== "recommendation" ? "basis-[33%] " : "basis-[45%] "
+          }`}
+        >
           <img
-            className="rounded-xl object-cover h-60 w-full"
+            className={`rounded-xl object-cover h-full w-full ${
+              component !== "recommendation"
+                ? "max-h-[14rem] max-w-96"
+                : "max-h-[8rem] max-w-40"
+            }`}
             src={thumbnail}
           />
-          <span className="bg-black text-white text-sm p-1 rounded-md absolute right-1 bottom-1">
+          <span
+            className={`bg-black text-white  p-1 rounded-md absolute right-1 bottom-1 ${
+              component !== "recommendation" ? "text-sm" : "text-xs"
+            }`}
+          >
             {formattedDuration}
           </span>
         </div>
-        <div className="col-span-2 flex flex-col gap-2">
-          <h1 className="text-white text-2xl font-bold">{title}</h1>
-          <p className="text-slate-300 text-sm">
+        <div
+          className={`flex flex-col flex-wrap ${
+            component !== "recommendation"
+              ? "basis-[67%] gap-3 my-2"
+              : "basis-[55%] gap-1"
+          }`}
+        >
+          <h1
+            className={`text-white font-bold ${
+              component !== "recommendation"
+                ? "text-3xl"
+                : "text-sm line-clamp-1"
+            }`}
+          >
+            {title}
+          </h1>
+          <p
+            className={`text-slate-300 ${
+              component !== "recommendation" ? "text-xl" : "text-xs"
+            }`}
+          >
             {views} views | {timeDifference}
           </p>
           <Link to={`/@${owner?.username}`}>
-            <div className="flex gap-1 items-center mt-1">
+            <div className="flex gap-2 items-center mt-1">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger className="p-0">
-                    <ChannelAvatar avatar={owner?.avatar} />
+                    <ChannelAvatar
+                      avatar={owner?.avatar}
+                      className={`${
+                        component !== "recommendation"
+                          ? "h-10 w-10 text-md"
+                          : "h-5 w-5 text-xs"
+                      }`}
+                    />
                   </TooltipTrigger>
                   <TooltipContent className="bg-black border-none text-white">
+                    //TODO: Add owner info in recommended videos
                     <span>{owner?.username}</span>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              <span className="text-white text-lg">{owner?.fullName}</span>
+              <span
+                className={`text-white ${
+                  component !== "recommendation" ? "text-2xl" : "text-xs"
+                }`}
+              >
+                {owner?.fullName}
+              </span>
             </div>
           </Link>
-          <p className="text-slate-300 text-md line-clamp-3">{description}</p>
+          <p
+            className={`text-slate-300 ${
+              component !== "recommendation"
+                ? "line-clamp-3 text-lg"
+                : "line-clamp-2 text-xs"
+            } `}
+          >
+            {description}
+          </p>
         </div>
       </div>
     </Link>
